@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Users, Calendar, MessageSquare, BookOpen } from "lucide-react";
@@ -7,25 +7,32 @@ import { Users, Calendar, MessageSquare, BookOpen } from "lucide-react";
 const MentorDashboard = () => {
   const { user, profile } = useAuth();
   const [studentCount, setStudentCount] = useState(0);
+  const [resourceCount, setResourceCount] = useState(0);
+  const [sessionCount, setSessionCount] = useState(0);
+  const [questionCount, setQuestionCount] = useState(0);
 
   useEffect(() => {
     if (!user) return;
-    const fetchStudents = async () => {
-      const { count } = await supabase
-        .from("mentor_assignments")
-        .select("*", { count: "exact", head: true })
-        .eq("mentor_id", user.id)
-        .eq("status", "active");
-      setStudentCount(count || 0);
+    const fetchData = async () => {
+      const [students, resources, sessions, questions] = await Promise.all([
+        supabase.from("mentor_assignments").select("*", { count: "exact", head: true }).eq("mentor_id", user.id).eq("status", "active"),
+        supabase.from("resources").select("*", { count: "exact", head: true }),
+        supabase.from("sessions").select("*", { count: "exact", head: true }).eq("mentor_id", user.id),
+        supabase.from("questions").select("*", { count: "exact", head: true }).eq("status", "open"),
+      ]);
+      setStudentCount(students.count || 0);
+      setResourceCount(resources.count || 0);
+      setSessionCount(sessions.count || 0);
+      setQuestionCount(questions.count || 0);
     };
-    fetchStudents();
+    fetchData();
   }, [user]);
 
   const stats = [
     { label: "Active Students", value: studentCount.toString(), icon: Users, color: "hsl(262, 83%, 58%)" },
-    { label: "Resources", value: "0", icon: BookOpen, color: "hsl(199, 89%, 48%)" },
-    { label: "Sessions", value: "0", icon: Calendar, color: "hsl(340, 82%, 52%)" },
-    { label: "Questions", value: "0", icon: MessageSquare, color: "hsl(152, 69%, 40%)" },
+    { label: "Resources", value: resourceCount.toString(), icon: BookOpen, color: "hsl(199, 89%, 48%)" },
+    { label: "Sessions", value: sessionCount.toString(), icon: Calendar, color: "hsl(340, 82%, 52%)" },
+    { label: "Open Questions", value: questionCount.toString(), icon: MessageSquare, color: "hsl(152, 69%, 40%)" },
   ];
 
   return (
@@ -46,10 +53,7 @@ const MentorDashboard = () => {
                   <p className="text-sm text-muted-foreground">{stat.label}</p>
                   <p className="text-2xl font-bold mt-1 font-['Space_Grotesk']">{stat.value}</p>
                 </div>
-                <div
-                  className="h-10 w-10 rounded-lg flex items-center justify-center"
-                  style={{ backgroundColor: `${stat.color}15` }}
-                >
+                <div className="h-10 w-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: `${stat.color}15` }}>
                   <stat.icon className="h-5 w-5" style={{ color: stat.color }} />
                 </div>
               </div>

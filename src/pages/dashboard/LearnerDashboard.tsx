@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,41 +9,39 @@ const LearnerDashboard = () => {
   const { user, profile } = useAuth();
   const [mentorName, setMentorName] = useState<string | null>(null);
   const [isOnWaitingList, setIsOnWaitingList] = useState(false);
+  const [resourceCount, setResourceCount] = useState(0);
+  const [sessionCount, setSessionCount] = useState(0);
+  const [questionCount, setQuestionCount] = useState(0);
 
   useEffect(() => {
     if (!user) return;
-    const fetchMentor = async () => {
-      const { data: assignment } = await supabase
-        .from("mentor_assignments")
-        .select("mentor_id")
-        .eq("learner_id", user.id)
-        .eq("status", "active")
-        .single();
+    const fetchData = async () => {
+      const [assignRes, waitRes, resCount, sessCount, qCount] = await Promise.all([
+        supabase.from("mentor_assignments").select("mentor_id").eq("learner_id", user.id).eq("status", "active").single(),
+        supabase.from("waiting_list").select("id").eq("learner_id", user.id).single(),
+        supabase.from("resources").select("*", { count: "exact", head: true }),
+        supabase.from("sessions").select("*", { count: "exact", head: true }).eq("learner_id", user.id),
+        supabase.from("questions").select("*", { count: "exact", head: true }).eq("asked_by", user.id),
+      ]);
 
-      if (assignment) {
-        const { data: mentorProfile } = await supabase
-          .from("profiles")
-          .select("full_name")
-          .eq("user_id", assignment.mentor_id)
-          .single();
+      if (assignRes.data) {
+        const { data: mentorProfile } = await supabase.from("profiles").select("full_name").eq("user_id", assignRes.data.mentor_id).single();
         setMentorName(mentorProfile?.full_name || "Unknown Mentor");
       } else {
-        const { data: waiting } = await supabase
-          .from("waiting_list")
-          .select("id")
-          .eq("learner_id", user.id)
-          .single();
-        setIsOnWaitingList(!!waiting);
+        setIsOnWaitingList(!!waitRes.data);
       }
+      setResourceCount(resCount.count || 0);
+      setSessionCount(sessCount.count || 0);
+      setQuestionCount(qCount.count || 0);
     };
-    fetchMentor();
+    fetchData();
   }, [user]);
 
   const stats = [
     { label: "My Mentor", value: mentorName || (isOnWaitingList ? "Waiting..." : "None"), icon: UserCircle, color: "hsl(262, 83%, 58%)" },
-    { label: "Resources", value: "0", icon: BookOpen, color: "hsl(199, 89%, 48%)" },
-    { label: "Sessions", value: "0", icon: Calendar, color: "hsl(340, 82%, 52%)" },
-    { label: "Questions", value: "0", icon: MessageSquare, color: "hsl(152, 69%, 40%)" },
+    { label: "Resources", value: resourceCount.toString(), icon: BookOpen, color: "hsl(199, 89%, 48%)" },
+    { label: "Sessions", value: sessionCount.toString(), icon: Calendar, color: "hsl(340, 82%, 52%)" },
+    { label: "Questions", value: questionCount.toString(), icon: MessageSquare, color: "hsl(152, 69%, 40%)" },
   ];
 
   return (
@@ -64,10 +62,7 @@ const LearnerDashboard = () => {
                   <p className="text-sm text-muted-foreground">{stat.label}</p>
                   <p className="text-2xl font-bold mt-1 font-['Space_Grotesk']">{stat.value}</p>
                 </div>
-                <div
-                  className="h-10 w-10 rounded-lg flex items-center justify-center"
-                  style={{ backgroundColor: `${stat.color}15` }}
-                >
+                <div className="h-10 w-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: `${stat.color}15` }}>
                   <stat.icon className="h-5 w-5" style={{ color: stat.color }} />
                 </div>
               </div>

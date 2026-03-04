@@ -23,12 +23,12 @@ import {
   BookOpen,
   Calendar,
   MessageSquare,
-  Settings,
   LogOut,
   GraduationCap,
   UserCircle,
   ClipboardList,
 } from "lucide-react";
+import NotificationBell from "@/components/NotificationBell";
 import { useLocation } from "react-router-dom";
 
 const learnerNav = [
@@ -158,8 +158,9 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       <div className="min-h-screen flex w-full">
         <AppSidebar />
         <div className="flex-1 flex flex-col">
-          <header className="h-14 flex items-center border-b border-border px-4">
-            <SidebarTrigger className="mr-4" />
+          <header className="h-14 flex items-center justify-between border-b border-border px-4">
+            <SidebarTrigger />
+            <NotificationBell />
           </header>
           <main className="flex-1 p-6">{children}</main>
         </div>

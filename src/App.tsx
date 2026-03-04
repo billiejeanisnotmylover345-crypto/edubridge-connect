@@ -9,6 +9,11 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import CompleteProfile from "./pages/CompleteProfile";
 import Dashboard from "./pages/Dashboard";
+import ResourcesPage from "./pages/dashboard/ResourcesPage";
+import SessionsPage from "./pages/dashboard/SessionsPage";
+import QAPage from "./pages/dashboard/QAPage";
+import MentorViewPage from "./pages/dashboard/MentorViewPage";
+import StudentsPage from "./pages/dashboard/StudentsPage";
 import PlaceholderPage from "./pages/dashboard/PlaceholderPage";
 import NotFound from "./pages/NotFound";
 
@@ -27,13 +32,13 @@ const App = () => (
             <Route path="/register" element={<Register />} />
             <Route path="/complete-profile" element={<CompleteProfile />} />
             <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/dashboard/mentor" element={<PlaceholderPage title="My Mentor" />} />
-            <Route path="/dashboard/students" element={<PlaceholderPage title="My Students" />} />
+            <Route path="/dashboard/mentor" element={<MentorViewPage />} />
+            <Route path="/dashboard/students" element={<StudentsPage />} />
             <Route path="/dashboard/users" element={<PlaceholderPage title="User Management" />} />
             <Route path="/dashboard/assignments" element={<PlaceholderPage title="Assignments" />} />
-            <Route path="/dashboard/resources" element={<PlaceholderPage title="Resources" />} />
-            <Route path="/dashboard/sessions" element={<PlaceholderPage title="Sessions" />} />
-            <Route path="/dashboard/qa" element={<PlaceholderPage title="Q&A" />} />
+            <Route path="/dashboard/resources" element={<ResourcesPage />} />
+            <Route path="/dashboard/sessions" element={<SessionsPage />} />
+            <Route path="/dashboard/qa" element={<QAPage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

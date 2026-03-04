@@ -14,6 +14,38 @@ export type Database = {
   }
   public: {
     Tables: {
+      answers: {
+        Row: {
+          answered_by: string
+          body: string
+          created_at: string
+          id: string
+          question_id: string
+        }
+        Insert: {
+          answered_by: string
+          body: string
+          created_at?: string
+          id?: string
+          question_id: string
+        }
+        Update: {
+          answered_by?: string
+          body?: string
+          created_at?: string
+          id?: string
+          question_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "answers_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mentor_assignments: {
         Row: {
           created_at: string
@@ -38,6 +70,39 @@ export type Database = {
           mentor_id?: string
           status?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      notifications: {
+        Row: {
+          created_at: string
+          id: string
+          link: string | null
+          message: string
+          read: boolean
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          link?: string | null
+          message?: string
+          read?: boolean
+          title: string
+          type?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          link?: string | null
+          message?: string
+          read?: boolean
+          title?: string
+          type?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -77,6 +142,111 @@ export type Database = {
           profile_completed?: boolean
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      questions: {
+        Row: {
+          asked_by: string
+          body: string
+          created_at: string
+          id: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          asked_by: string
+          body?: string
+          created_at?: string
+          id?: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          asked_by?: string
+          body?: string
+          created_at?: string
+          id?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      resources: {
+        Row: {
+          created_at: string
+          description: string | null
+          file_url: string | null
+          id: string
+          resource_type: string
+          title: string
+          updated_at: string
+          uploaded_by: string
+          video_url: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          file_url?: string | null
+          id?: string
+          resource_type?: string
+          title: string
+          updated_at?: string
+          uploaded_by: string
+          video_url?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          file_url?: string | null
+          id?: string
+          resource_type?: string
+          title?: string
+          updated_at?: string
+          uploaded_by?: string
+          video_url?: string | null
+        }
+        Relationships: []
+      }
+      sessions: {
+        Row: {
+          created_at: string
+          description: string | null
+          duration_minutes: number
+          id: string
+          learner_id: string
+          mentor_id: string
+          scheduled_at: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          duration_minutes?: number
+          id?: string
+          learner_id: string
+          mentor_id: string
+          scheduled_at: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          duration_minutes?: number
+          id?: string
+          learner_id?: string
+          mentor_id?: string
+          scheduled_at?: string
+          status?: string
+          title?: string
+          updated_at?: string
         }
         Relationships: []
       }
