@@ -27,21 +27,21 @@ const MentorViewPage = () => {
         .select("mentor_id")
         .eq("learner_id", user.id)
         .eq("status", "active")
-        .single();
+        .maybeSingle();
 
       if (assignment) {
         const { data: profile } = await supabase
           .from("profiles")
           .select("full_name, bio, interests")
           .eq("user_id", assignment.mentor_id)
-          .single();
+          .maybeSingle();
         if (profile) setMentor(profile);
       } else {
         const { data: waiting } = await supabase
           .from("waiting_list")
           .select("id")
           .eq("learner_id", user.id)
-          .single();
+          .maybeSingle();
         setIsOnWaitingList(!!waiting);
       }
       setLoading(false);
