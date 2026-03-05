@@ -37,11 +37,6 @@ const CompleteProfile = () => {
 
       if (error) throw error;
 
-      // Auto-assign mentor for learners
-      if (role === "learner") {
-        await autoAssignMentor(user.id);
-      }
-
       await refreshProfile();
       toast.success("Profile completed!");
       navigate("/dashboard");
@@ -49,49 +44,6 @@ const CompleteProfile = () => {
       toast.error(error.message || "Failed to complete profile");
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const autoAssignMentor = async (learnerId: string) => {
-    // Find mentor with fewest active students
-    const { data: mentors } = await supabase
-      .from("user_roles")
-      .select("user_id")
-      .eq("role", "mentor");
-
-    if (!mentors || mentors.length === 0) {
-      // No mentors, add to waiting list
-      await supabase.from("waiting_list").insert({ learner_id: learnerId });
-      toast.info("No mentors available yet. You've been added to the waiting list.");
-      return;
-    }
-
-    // Count assignments per mentor
-    const { data: assignments } = await supabase
-      .from("mentor_assignments")
-      .select("mentor_id")
-      .eq("status", "active");
-
-    const counts: Record<string, number> = {};
-    mentors.forEach((m) => (counts[m.user_id] = 0));
-    assignments?.forEach((a) => {
-      if (counts[a.mentor_id] !== undefined) counts[a.mentor_id]++;
-    });
-
-    // Get mentor with min students
-    const bestMentor = Object.entries(counts).sort((a, b) => a[1] - b[1])[0];
-    if (bestMentor) {
-      const { error } = await supabase.from("mentor_assignments").insert({
-        learner_id: learnerId,
-        mentor_id: bestMentor[0],
-      });
-      if (error) {
-        // Fallback: add to waiting list
-        await supabase.from("waiting_list").insert({ learner_id: learnerId });
-        toast.info("Added to waiting list. A mentor will be assigned soon.");
-      } else {
-        toast.success("A mentor has been assigned to you!");
-      }
     }
   };
 
