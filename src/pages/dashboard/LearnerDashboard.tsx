@@ -17,8 +17,8 @@ const LearnerDashboard = () => {
     if (!user) return;
     const fetchData = async () => {
       const [assignRes, waitRes, resCount, sessCount, qCount] = await Promise.all([
-        supabase.from("mentor_assignments").select("mentor_id").eq("learner_id", user.id).eq("status", "active").single(),
-        supabase.from("waiting_list").select("id").eq("learner_id", user.id).single(),
+        supabase.from("mentor_assignments").select("mentor_id").eq("learner_id", user.id).eq("status", "active").maybeSingle(),
+        supabase.from("waiting_list").select("id").eq("learner_id", user.id).maybeSingle(),
         supabase.from("resources").select("*", { count: "exact", head: true }),
         supabase.from("sessions").select("*", { count: "exact", head: true }).eq("learner_id", user.id),
         supabase.from("questions").select("*", { count: "exact", head: true }).eq("asked_by", user.id),
