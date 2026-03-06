@@ -45,33 +45,34 @@ const MentorViewPage = () => {
         .maybeSingle();
       if (profile) setAssignedMentor(profile);
     } else {
-      // Fetch all mentor profiles
-      const { data: mentorRoles } = await supabase
-        .from("user_roles")
-        .select("user_id")
-        .eq("role", "mentor");
+      setAssignedMentor(null);
+    }
 
-      if (mentorRoles && mentorRoles.length > 0) {
-        const mentorIds = mentorRoles.map((r) => r.user_id);
-        const { data: profiles } = await supabase
-          .from("profiles")
-          .select("user_id, full_name, bio, interests")
-          .in("user_id", mentorIds);
-        setAvailableMentors(profiles || []);
+    // Always fetch available mentors (needed for switching)
+    const { data: mentorRoles } = await supabase
+      .from("user_roles")
+      .select("user_id")
+      .eq("role", "mentor");
 
-        // Get student counts per mentor
-        const { data: assignments } = await supabase
-          .from("mentor_assignments")
-          .select("mentor_id")
-          .eq("status", "active");
+    if (mentorRoles && mentorRoles.length > 0) {
+      const mentorIds = mentorRoles.map((r) => r.user_id);
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("user_id, full_name, bio, interests")
+        .in("user_id", mentorIds);
+      setAvailableMentors(profiles || []);
 
-        const counts: Record<string, number> = {};
-        mentorIds.forEach((id) => (counts[id] = 0));
-        assignments?.forEach((a) => {
-          if (counts[a.mentor_id] !== undefined) counts[a.mentor_id]++;
-        });
-        setStudentCounts(counts);
-      }
+      const { data: assignments } = await supabase
+        .from("mentor_assignments")
+        .select("mentor_id")
+        .eq("status", "active");
+
+      const counts: Record<string, number> = {};
+      mentorIds.forEach((id) => (counts[id] = 0));
+      assignments?.forEach((a) => {
+        if (counts[a.mentor_id] !== undefined) counts[a.mentor_id]++;
+      });
+      setStudentCounts(counts);
     }
     setLoading(false);
   };
