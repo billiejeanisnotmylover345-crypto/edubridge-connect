@@ -7,7 +7,7 @@ import { BookOpen, Calendar, MessageSquare, UserCircle } from "lucide-react";
 
 const LearnerDashboard = () => {
   const { user, profile } = useAuth();
-  const [mentorName, setMentorName] = useState<string | null>(null);
+  const [mentorCount, setMentorCount] = useState(0);
   const [isOnWaitingList, setIsOnWaitingList] = useState(false);
   const [resourceCount, setResourceCount] = useState(0);
   const [sessionCount, setSessionCount] = useState(0);
@@ -17,17 +17,15 @@ const LearnerDashboard = () => {
     if (!user) return;
     const fetchData = async () => {
       const [assignRes, waitRes, resCount, sessCount, qCount] = await Promise.all([
-        supabase.from("mentor_assignments").select("mentor_id").eq("learner_id", user.id).eq("status", "active").maybeSingle(),
+        supabase.from("mentor_assignments").select("mentor_id", { count: "exact", head: true }).eq("learner_id", user.id).eq("status", "active"),
         supabase.from("waiting_list").select("id").eq("learner_id", user.id).maybeSingle(),
         supabase.from("resources").select("*", { count: "exact", head: true }),
         supabase.from("sessions").select("*", { count: "exact", head: true }).eq("learner_id", user.id),
         supabase.from("questions").select("*", { count: "exact", head: true }).eq("asked_by", user.id),
       ]);
 
-      if (assignRes.data) {
-        const { data: mentorProfile } = await supabase.from("profiles").select("full_name").eq("user_id", assignRes.data.mentor_id).single();
-        setMentorName(mentorProfile?.full_name || "Unknown Mentor");
-      } else {
+      setMentorCount(assignRes.count || 0);
+      if ((assignRes.count || 0) === 0) {
         setIsOnWaitingList(!!waitRes.data);
       }
       setResourceCount(resCount.count || 0);
@@ -38,7 +36,7 @@ const LearnerDashboard = () => {
   }, [user]);
 
   const stats = [
-    { label: "My Mentor", value: mentorName || (isOnWaitingList ? "Waiting..." : "None"), icon: UserCircle, color: "hsl(262, 83%, 58%)" },
+    { label: "My Mentors", value: mentorCount > 0 ? mentorCount.toString() : (isOnWaitingList ? "Waiting..." : "None"), icon: UserCircle, color: "hsl(262, 83%, 58%)" },
     { label: "Resources", value: resourceCount.toString(), icon: BookOpen, color: "hsl(199, 89%, 48%)" },
     { label: "Sessions", value: sessionCount.toString(), icon: Calendar, color: "hsl(340, 82%, 52%)" },
     { label: "Questions", value: questionCount.toString(), icon: MessageSquare, color: "hsl(152, 69%, 40%)" },
