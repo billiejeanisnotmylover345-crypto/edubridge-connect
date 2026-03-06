@@ -23,6 +23,7 @@ const MentorViewPage = () => {
   const [studentCounts, setStudentCounts] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
   const [selecting, setSelecting] = useState<string | null>(null);
+  const [switching, setSwitching] = useState(false);
 
   const fetchData = async () => {
     if (!user) return;
