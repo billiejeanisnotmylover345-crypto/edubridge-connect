@@ -179,43 +179,52 @@ const MentorViewPage = () => {
           </CardContent>
         </Card>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {availableMentors.map((m) => (
-            <Card key={m.user_id} className="border-border/50 hover:border-primary/30 transition-colors">
-              <CardContent className="pt-6">
-                <div className="flex items-center gap-3 mb-3">
-                  <Avatar className="h-12 w-12">
-                    <AvatarFallback className="bg-primary/10 text-primary">
-                      {initials(m.full_name)}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <h3 className="font-semibold font-['Space_Grotesk']">{m.full_name}</h3>
-                    <p className="text-xs text-muted-foreground">
-                      {studentCounts[m.user_id] || 0} student{studentCounts[m.user_id] !== 1 ? "s" : ""}
-                    </p>
+        <div>
+          {switching && (
+            <Button variant="ghost" className="mb-4" onClick={() => setSwitching(false)}>
+              ← Back to current mentor
+            </Button>
+          )}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {availableMentors
+              .filter((m) => !assignedMentor || m.user_id !== assignedMentor.user_id)
+              .map((m) => (
+              <Card key={m.user_id} className="border-border/50 hover:border-primary/30 transition-colors">
+                <CardContent className="pt-6">
+                  <div className="flex items-center gap-3 mb-3">
+                    <Avatar className="h-12 w-12">
+                      <AvatarFallback className="bg-primary/10 text-primary">
+                        {initials(m.full_name)}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <h3 className="font-semibold font-['Space_Grotesk']">{m.full_name}</h3>
+                      <p className="text-xs text-muted-foreground">
+                        {studentCounts[m.user_id] || 0} student{studentCounts[m.user_id] !== 1 ? "s" : ""}
+                      </p>
+                    </div>
                   </div>
-                </div>
-                {m.bio && (
-                  <p className="text-sm text-muted-foreground mb-3 line-clamp-2">{m.bio}</p>
-                )}
-                {m.interests && m.interests.length > 0 && (
-                  <div className="flex flex-wrap gap-1 mb-4">
-                    {m.interests.slice(0, 4).map((i) => (
-                      <Badge key={i} variant="outline" className="text-xs">{i}</Badge>
-                    ))}
-                  </div>
-                )}
-                <Button
-                  className="w-full"
-                  onClick={() => selectMentor(m.user_id)}
-                  disabled={selecting === m.user_id}
-                >
-                  {selecting === m.user_id ? "Selecting..." : "Choose Mentor"}
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
+                  {m.bio && (
+                    <p className="text-sm text-muted-foreground mb-3 line-clamp-2">{m.bio}</p>
+                  )}
+                  {m.interests && m.interests.length > 0 && (
+                    <div className="flex flex-wrap gap-1 mb-4">
+                      {m.interests.slice(0, 4).map((i) => (
+                        <Badge key={i} variant="outline" className="text-xs">{i}</Badge>
+                      ))}
+                    </div>
+                  )}
+                  <Button
+                    className="w-full"
+                    onClick={() => selectMentor(m.user_id)}
+                    disabled={selecting === m.user_id}
+                  >
+                    {selecting === m.user_id ? "Switching..." : switching ? "Switch to this Mentor" : "Choose Mentor"}
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </div>
       )}
     </DashboardLayout>
