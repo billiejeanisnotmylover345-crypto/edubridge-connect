@@ -84,16 +84,26 @@ const MentorViewPage = () => {
     if (!user) return;
     setSelecting(mentorId);
     try {
+      // If switching, deactivate current assignment first
+      if (assignedMentor) {
+        const { error: deactivateError } = await supabase
+          .from("mentor_assignments")
+          .update({ status: "inactive" })
+          .eq("learner_id", user.id)
+          .eq("status", "active");
+        if (deactivateError) throw deactivateError;
+      }
+
       const { error } = await supabase.from("mentor_assignments").insert({
         learner_id: user.id,
         mentor_id: mentorId,
       });
       if (error) throw error;
 
-      // Remove from waiting list if present
       await supabase.from("waiting_list").delete().eq("learner_id", user.id);
 
-      toast.success("Mentor selected successfully!");
+      toast.success(assignedMentor ? "Mentor switched successfully!" : "Mentor selected successfully!");
+      setSwitching(false);
       await fetchData();
     } catch (err: any) {
       toast.error(err.message || "Failed to select mentor");
