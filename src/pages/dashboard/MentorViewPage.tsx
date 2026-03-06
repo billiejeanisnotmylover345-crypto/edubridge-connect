@@ -23,6 +23,7 @@ const MentorViewPage = () => {
   const [studentCounts, setStudentCounts] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
   const [selecting, setSelecting] = useState<string | null>(null);
+  const [switching, setSwitching] = useState(false);
 
   const fetchData = async () => {
     if (!user) return;
@@ -44,33 +45,34 @@ const MentorViewPage = () => {
         .maybeSingle();
       if (profile) setAssignedMentor(profile);
     } else {
-      // Fetch all mentor profiles
-      const { data: mentorRoles } = await supabase
-        .from("user_roles")
-        .select("user_id")
-        .eq("role", "mentor");
+      setAssignedMentor(null);
+    }
 
-      if (mentorRoles && mentorRoles.length > 0) {
-        const mentorIds = mentorRoles.map((r) => r.user_id);
-        const { data: profiles } = await supabase
-          .from("profiles")
-          .select("user_id, full_name, bio, interests")
-          .in("user_id", mentorIds);
-        setAvailableMentors(profiles || []);
+    // Always fetch available mentors (needed for switching)
+    const { data: mentorRoles } = await supabase
+      .from("user_roles")
+      .select("user_id")
+      .eq("role", "mentor");
 
-        // Get student counts per mentor
-        const { data: assignments } = await supabase
-          .from("mentor_assignments")
-          .select("mentor_id")
-          .eq("status", "active");
+    if (mentorRoles && mentorRoles.length > 0) {
+      const mentorIds = mentorRoles.map((r) => r.user_id);
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("user_id, full_name, bio, interests")
+        .in("user_id", mentorIds);
+      setAvailableMentors(profiles || []);
 
-        const counts: Record<string, number> = {};
-        mentorIds.forEach((id) => (counts[id] = 0));
-        assignments?.forEach((a) => {
-          if (counts[a.mentor_id] !== undefined) counts[a.mentor_id]++;
-        });
-        setStudentCounts(counts);
-      }
+      const { data: assignments } = await supabase
+        .from("mentor_assignments")
+        .select("mentor_id")
+        .eq("status", "active");
+
+      const counts: Record<string, number> = {};
+      mentorIds.forEach((id) => (counts[id] = 0));
+      assignments?.forEach((a) => {
+        if (counts[a.mentor_id] !== undefined) counts[a.mentor_id]++;
+      });
+      setStudentCounts(counts);
     }
     setLoading(false);
   };
@@ -83,16 +85,26 @@ const MentorViewPage = () => {
     if (!user) return;
     setSelecting(mentorId);
     try {
+      // If switching, deactivate current assignment first
+      if (assignedMentor) {
+        const { error: deactivateError } = await supabase
+          .from("mentor_assignments")
+          .update({ status: "inactive" })
+          .eq("learner_id", user.id)
+          .eq("status", "active");
+        if (deactivateError) throw deactivateError;
+      }
+
       const { error } = await supabase.from("mentor_assignments").insert({
         learner_id: user.id,
         mentor_id: mentorId,
       });
       if (error) throw error;
 
-      // Remove from waiting list if present
       await supabase.from("waiting_list").delete().eq("learner_id", user.id);
 
-      toast.success("Mentor selected successfully!");
+      toast.success(assignedMentor ? "Mentor switched successfully!" : "Mentor selected successfully!");
+      setSwitching(false);
       await fetchData();
     } catch (err: any) {
       toast.error(err.message || "Failed to select mentor");
@@ -117,7 +129,7 @@ const MentorViewPage = () => {
         <div className="flex justify-center py-16">
           <div className="h-8 w-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
         </div>
-      ) : assignedMentor ? (
+      ) : assignedMentor && !switching ? (
         <Card className="border-border/50 max-w-lg">
           <CardContent className="pt-6">
             <div className="flex items-center gap-4 mb-4">
@@ -140,7 +152,7 @@ const MentorViewPage = () => {
               </div>
             )}
             {assignedMentor.interests && assignedMentor.interests.length > 0 && (
-              <div>
+              <div className="mb-4">
                 <h4 className="text-sm font-medium mb-2">Interests</h4>
                 <div className="flex flex-wrap gap-2">
                   {assignedMentor.interests.map((i) => (
@@ -149,6 +161,9 @@ const MentorViewPage = () => {
                 </div>
               </div>
             )}
+            <Button variant="outline" className="w-full" onClick={() => { setSwitching(true); fetchData(); }}>
+              Change Mentor
+            </Button>
           </CardContent>
         </Card>
       ) : availableMentors.length === 0 ? (
@@ -164,43 +179,52 @@ const MentorViewPage = () => {
           </CardContent>
         </Card>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {availableMentors.map((m) => (
-            <Card key={m.user_id} className="border-border/50 hover:border-primary/30 transition-colors">
-              <CardContent className="pt-6">
-                <div className="flex items-center gap-3 mb-3">
-                  <Avatar className="h-12 w-12">
-                    <AvatarFallback className="bg-primary/10 text-primary">
-                      {initials(m.full_name)}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <h3 className="font-semibold font-['Space_Grotesk']">{m.full_name}</h3>
-                    <p className="text-xs text-muted-foreground">
-                      {studentCounts[m.user_id] || 0} student{studentCounts[m.user_id] !== 1 ? "s" : ""}
-                    </p>
+        <div>
+          {switching && (
+            <Button variant="ghost" className="mb-4" onClick={() => setSwitching(false)}>
+              ← Back to current mentor
+            </Button>
+          )}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {availableMentors
+              .filter((m) => !assignedMentor || m.user_id !== assignedMentor.user_id)
+              .map((m) => (
+              <Card key={m.user_id} className="border-border/50 hover:border-primary/30 transition-colors">
+                <CardContent className="pt-6">
+                  <div className="flex items-center gap-3 mb-3">
+                    <Avatar className="h-12 w-12">
+                      <AvatarFallback className="bg-primary/10 text-primary">
+                        {initials(m.full_name)}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <h3 className="font-semibold font-['Space_Grotesk']">{m.full_name}</h3>
+                      <p className="text-xs text-muted-foreground">
+                        {studentCounts[m.user_id] || 0} student{studentCounts[m.user_id] !== 1 ? "s" : ""}
+                      </p>
+                    </div>
                   </div>
-                </div>
-                {m.bio && (
-                  <p className="text-sm text-muted-foreground mb-3 line-clamp-2">{m.bio}</p>
-                )}
-                {m.interests && m.interests.length > 0 && (
-                  <div className="flex flex-wrap gap-1 mb-4">
-                    {m.interests.slice(0, 4).map((i) => (
-                      <Badge key={i} variant="outline" className="text-xs">{i}</Badge>
-                    ))}
-                  </div>
-                )}
-                <Button
-                  className="w-full"
-                  onClick={() => selectMentor(m.user_id)}
-                  disabled={selecting === m.user_id}
-                >
-                  {selecting === m.user_id ? "Selecting..." : "Choose Mentor"}
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
+                  {m.bio && (
+                    <p className="text-sm text-muted-foreground mb-3 line-clamp-2">{m.bio}</p>
+                  )}
+                  {m.interests && m.interests.length > 0 && (
+                    <div className="flex flex-wrap gap-1 mb-4">
+                      {m.interests.slice(0, 4).map((i) => (
+                        <Badge key={i} variant="outline" className="text-xs">{i}</Badge>
+                      ))}
+                    </div>
+                  )}
+                  <Button
+                    className="w-full"
+                    onClick={() => selectMentor(m.user_id)}
+                    disabled={selecting === m.user_id}
+                  >
+                    {selecting === m.user_id ? "Switching..." : switching ? "Switch to this Mentor" : "Choose Mentor"}
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </div>
       )}
     </DashboardLayout>
