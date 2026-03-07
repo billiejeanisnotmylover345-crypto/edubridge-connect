@@ -1,0 +1,1 @@
+ALTER TABLE public.sessions ADD COLUMN meeting_link text DEFAULT NULL;

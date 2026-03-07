@@ -218,6 +218,7 @@ export type Database = {
           duration_minutes: number
           id: string
           learner_id: string
+          meeting_link: string | null
           mentor_id: string
           scheduled_at: string
           status: string
@@ -230,6 +231,7 @@ export type Database = {
           duration_minutes?: number
           id?: string
           learner_id: string
+          meeting_link?: string | null
           mentor_id: string
           scheduled_at: string
           status?: string
@@ -242,6 +244,7 @@ export type Database = {
           duration_minutes?: number
           id?: string
           learner_id?: string
+          meeting_link?: string | null
           mentor_id?: string
           scheduled_at?: string
           status?: string
