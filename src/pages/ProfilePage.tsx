@@ -116,7 +116,7 @@ const ProfilePage = ({ editMode = false }: ProfilePageProps) => {
               onChange={(e) => setInterests(e.target.value)}
             />
           </div>
-          {(role === "learner" || (!editMode && role === "learner")) && (
+          {role === "learner" && (
             <div className="space-y-2">
               <Label htmlFor="goals">Learning Goals</Label>
               <Textarea
