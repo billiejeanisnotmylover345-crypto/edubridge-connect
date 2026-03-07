@@ -5,13 +5,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import DashboardLayout from "@/components/DashboardLayout";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Calendar, Plus, Clock, User, Link as LinkIcon, ExternalLink } from "lucide-react";
+import { Calendar, Plus, Clock, User, Link as LinkIcon, ExternalLink, Pencil } from "lucide-react";
 import { format } from "date-fns";
 
 interface Session {
@@ -42,11 +42,12 @@ const SessionsPage = () => {
   const [selectedLearner, setSelectedLearner] = useState("");
   const [learners, setLearners] = useState<{ id: string; name: string }[]>([]);
   const [submitting, setSubmitting] = useState(false);
+  const [editingSession, setEditingSession] = useState<Session | null>(null);
 
   const canCreate = role === "mentor" || role === "admin";
 
   const fetchSessions = async () => {
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from("sessions")
       .select("*")
       .order("scheduled_at", { ascending: true });
@@ -95,41 +96,78 @@ const SessionsPage = () => {
     fetchLearners();
   }, [user]);
 
-  const handleCreate = async (e: React.FormEvent) => {
+  const resetForm = () => {
+    setTitle("");
+    setDescription("");
+    setScheduledAt("");
+    setDuration("60");
+    setMeetingLink("");
+    setSelectedLearner("");
+    setEditingSession(null);
+  };
+
+  const openCreate = () => {
+    resetForm();
+    setDialogOpen(true);
+  };
+
+  const openEdit = (s: Session) => {
+    setEditingSession(s);
+    setTitle(s.title);
+    setDescription(s.description || "");
+    setScheduledAt(format(new Date(s.scheduled_at), "yyyy-MM-dd'T'HH:mm"));
+    setDuration(String(s.duration_minutes));
+    setMeetingLink(s.meeting_link || "");
+    setSelectedLearner(s.learner_id);
+    setDialogOpen(true);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
     setSubmitting(true);
 
     try {
-      const { error } = await supabase.from("sessions").insert({
-        mentor_id: user.id,
-        learner_id: selectedLearner,
-        title,
-        description,
-        scheduled_at: new Date(scheduledAt).toISOString(),
-        duration_minutes: parseInt(duration),
-        meeting_link: meetingLink || null,
-      });
-      if (error) throw error;
+      if (editingSession) {
+        const { error } = await supabase
+          .from("sessions")
+          .update({
+            title,
+            description,
+            scheduled_at: new Date(scheduledAt).toISOString(),
+            duration_minutes: parseInt(duration),
+            meeting_link: meetingLink || null,
+          })
+          .eq("id", editingSession.id);
+        if (error) throw error;
+        toast.success("Session updated!");
+      } else {
+        const { error } = await supabase.from("sessions").insert({
+          mentor_id: user.id,
+          learner_id: selectedLearner,
+          title,
+          description,
+          scheduled_at: new Date(scheduledAt).toISOString(),
+          duration_minutes: parseInt(duration),
+          meeting_link: meetingLink || null,
+        });
+        if (error) throw error;
 
-      await supabase.from("notifications").insert({
-        user_id: selectedLearner,
-        title: "New Session Scheduled",
-        message: `Your mentor scheduled "${title}" for ${format(new Date(scheduledAt), "MMM d, yyyy 'at' h:mm a")}`,
-        type: "session",
-        link: "/dashboard/sessions",
-      });
+        await supabase.from("notifications").insert({
+          user_id: selectedLearner,
+          title: "New Session Scheduled",
+          message: `Your mentor scheduled "${title}" for ${format(new Date(scheduledAt), "MMM d, yyyy 'at' h:mm a")}`,
+          type: "session",
+          link: "/dashboard/sessions",
+        });
+        toast.success("Session created!");
+      }
 
-      toast.success("Session created!");
       setDialogOpen(false);
-      setTitle("");
-      setDescription("");
-      setScheduledAt("");
-      setMeetingLink("");
-      setSelectedLearner("");
+      resetForm();
       fetchSessions();
     } catch (err: any) {
-      toast.error(err.message || "Failed to create session");
+      toast.error(err.message || "Failed to save session");
     } finally {
       setSubmitting(false);
     }
@@ -167,67 +205,68 @@ const SessionsPage = () => {
           <p className="text-muted-foreground mt-1">View and manage your sessions.</p>
         </div>
         {canCreate && (
-          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-            <DialogTrigger asChild>
-              <Button><Plus className="h-4 w-4 mr-2" />New Session</Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle className="font-['Space_Grotesk']">Schedule Session</DialogTitle>
-              </DialogHeader>
-              <form onSubmit={handleCreate} className="space-y-4">
-                <div className="space-y-2">
-                  <Label>Title</Label>
-                  <Input value={title} onChange={(e) => setTitle(e.target.value)} required />
-                </div>
-                <div className="space-y-2">
-                  <Label>Description</Label>
-                  <Textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={2} />
-                </div>
-                <div className="space-y-2">
-                  <Label className="flex items-center gap-1.5">
-                    <LinkIcon className="h-3.5 w-3.5" />
-                    Meeting Link
-                  </Label>
-                  <Input
-                    type="url"
-                    placeholder="https://meet.google.com/... or https://zoom.us/..."
-                    value={meetingLink}
-                    onChange={(e) => setMeetingLink(e.target.value)}
-                  />
-                  <p className="text-xs text-muted-foreground">Paste a Zoom, Google Meet, or Teams link</p>
-                </div>
-                {role === "mentor" && (
-                  <div className="space-y-2">
-                    <Label>Student</Label>
-                    <Select value={selectedLearner} onValueChange={setSelectedLearner}>
-                      <SelectTrigger><SelectValue placeholder="Select student" /></SelectTrigger>
-                      <SelectContent>
-                        {learners.map((l) => (
-                          <SelectItem key={l.id} value={l.id}>{l.name}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                )}
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label>Date & Time</Label>
-                    <Input type="datetime-local" value={scheduledAt} onChange={(e) => setScheduledAt(e.target.value)} required />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Duration (min)</Label>
-                    <Input type="number" value={duration} onChange={(e) => setDuration(e.target.value)} min="15" max="180" />
-                  </div>
-                </div>
-                <Button type="submit" className="w-full" disabled={submitting || (!selectedLearner && role === "mentor")}>
-                  {submitting ? "Creating..." : "Schedule Session"}
-                </Button>
-              </form>
-            </DialogContent>
-          </Dialog>
+          <Button onClick={openCreate}><Plus className="h-4 w-4 mr-2" />New Session</Button>
         )}
       </div>
+
+      <Dialog open={dialogOpen} onOpenChange={(open) => { setDialogOpen(open); if (!open) resetForm(); }}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="font-['Space_Grotesk']">
+              {editingSession ? "Edit Session" : "Schedule Session"}
+            </DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label>Title</Label>
+              <Input value={title} onChange={(e) => setTitle(e.target.value)} required />
+            </div>
+            <div className="space-y-2">
+              <Label>Description</Label>
+              <Textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={2} />
+            </div>
+            <div className="space-y-2">
+              <Label className="flex items-center gap-1.5">
+                <LinkIcon className="h-3.5 w-3.5" />
+                Meeting Link
+              </Label>
+              <Input
+                type="url"
+                placeholder="https://meet.google.com/... or https://zoom.us/..."
+                value={meetingLink}
+                onChange={(e) => setMeetingLink(e.target.value)}
+              />
+              <p className="text-xs text-muted-foreground">Paste a Zoom, Google Meet, or Teams link</p>
+            </div>
+            {!editingSession && role === "mentor" && (
+              <div className="space-y-2">
+                <Label>Student</Label>
+                <Select value={selectedLearner} onValueChange={setSelectedLearner}>
+                  <SelectTrigger><SelectValue placeholder="Select student" /></SelectTrigger>
+                  <SelectContent>
+                    {learners.map((l) => (
+                      <SelectItem key={l.id} value={l.id}>{l.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Date & Time</Label>
+                <Input type="datetime-local" value={scheduledAt} onChange={(e) => setScheduledAt(e.target.value)} required />
+              </div>
+              <div className="space-y-2">
+                <Label>Duration (min)</Label>
+                <Input type="number" value={duration} onChange={(e) => setDuration(e.target.value)} min="15" max="180" />
+              </div>
+            </div>
+            <Button type="submit" className="w-full" disabled={submitting || (!editingSession && !selectedLearner && role === "mentor")}>
+              {submitting ? "Saving..." : (editingSession ? "Save Changes" : "Schedule Session")}
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
 
       {loading ? (
         <div className="flex justify-center py-16">
@@ -299,6 +338,9 @@ const SessionsPage = () => {
                     </div>
                     {canCreate && s.status === "upcoming" && (
                       <div className="flex gap-2 ml-4" onClick={(e) => e.stopPropagation()}>
+                        <Button size="sm" variant="outline" onClick={() => openEdit(s)}>
+                          <Pencil className="h-3.5 w-3.5 mr-1" /> Edit
+                        </Button>
                         <Button size="sm" variant="outline" onClick={() => updateStatus(s.id, "completed")}>
                           Complete
                         </Button>
