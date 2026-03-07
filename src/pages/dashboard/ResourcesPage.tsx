@@ -11,7 +11,7 @@ import DashboardLayout from "@/components/DashboardLayout";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { BookOpen, Plus, FileText, Video, Link2, Download, Trash2 } from "lucide-react";
+import { BookOpen, Plus, FileText, Video, Link2, Download, Trash2, Pencil } from "lucide-react";
 import { format } from "date-fns";
 
 interface Resource {
@@ -37,17 +37,17 @@ const ResourcesPage = () => {
   const [videoUrl, setVideoUrl] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [editingResource, setEditingResource] = useState<Resource | null>(null);
 
   const canUpload = role === "mentor" || role === "admin";
 
   const fetchResources = async () => {
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from("resources")
       .select("*")
       .order("created_at", { ascending: false });
 
     if (data) {
-      // Fetch uploader names
       const uploaderIds = [...new Set(data.map((r) => r.uploaded_by))];
       const { data: profiles } = await supabase
         .from("profiles")
@@ -68,13 +68,37 @@ const ResourcesPage = () => {
     fetchResources();
   }, []);
 
+  const resetForm = () => {
+    setTitle("");
+    setDescription("");
+    setVideoUrl("");
+    setFile(null);
+    setResourceType("document");
+    setEditingResource(null);
+  };
+
+  const openCreate = () => {
+    resetForm();
+    setDialogOpen(true);
+  };
+
+  const openEdit = (r: Resource) => {
+    setEditingResource(r);
+    setTitle(r.title);
+    setDescription(r.description || "");
+    setResourceType(r.resource_type);
+    setVideoUrl(r.video_url || "");
+    setFile(null);
+    setDialogOpen(true);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
     setSubmitting(true);
 
     try {
-      let fileUrl: string | null = null;
+      let fileUrl: string | null = editingResource?.file_url || null;
 
       if (file) {
         const ext = file.name.split(".").pop();
@@ -83,30 +107,41 @@ const ResourcesPage = () => {
           .from("resources")
           .upload(path, file);
         if (uploadError) throw uploadError;
-
         const { data: urlData } = supabase.storage.from("resources").getPublicUrl(path);
         fileUrl = urlData.publicUrl;
       }
 
-      const { error } = await supabase.from("resources").insert({
-        title,
-        description,
-        resource_type: resourceType,
-        file_url: fileUrl,
-        video_url: resourceType === "video" ? videoUrl : null,
-        uploaded_by: user.id,
-      });
+      if (editingResource) {
+        const { error } = await supabase
+          .from("resources")
+          .update({
+            title,
+            description,
+            resource_type: resourceType,
+            file_url: fileUrl,
+            video_url: resourceType === "video" || resourceType === "link" ? videoUrl : null,
+          })
+          .eq("id", editingResource.id);
+        if (error) throw error;
+        toast.success("Resource updated!");
+      } else {
+        const { error } = await supabase.from("resources").insert({
+          title,
+          description,
+          resource_type: resourceType,
+          file_url: fileUrl,
+          video_url: resourceType === "video" || resourceType === "link" ? videoUrl : null,
+          uploaded_by: user.id,
+        });
+        if (error) throw error;
+        toast.success("Resource uploaded!");
+      }
 
-      if (error) throw error;
-      toast.success("Resource uploaded!");
       setDialogOpen(false);
-      setTitle("");
-      setDescription("");
-      setVideoUrl("");
-      setFile(null);
+      resetForm();
       fetchResources();
     } catch (err: any) {
-      toast.error(err.message || "Upload failed");
+      toast.error(err.message || "Operation failed");
     } finally {
       setSubmitting(false);
     }
@@ -146,53 +181,54 @@ const ResourcesPage = () => {
           <p className="text-muted-foreground mt-1">Browse and download learning materials.</p>
         </div>
         {canUpload && (
-          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-            <DialogTrigger asChild>
-              <Button><Plus className="h-4 w-4 mr-2" />Upload Resource</Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle className="font-['Space_Grotesk']">Upload Resource</DialogTitle>
-              </DialogHeader>
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="space-y-2">
-                  <Label>Title</Label>
-                  <Input value={title} onChange={(e) => setTitle(e.target.value)} required />
-                </div>
-                <div className="space-y-2">
-                  <Label>Description</Label>
-                  <Textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={3} />
-                </div>
-                <div className="space-y-2">
-                  <Label>Type</Label>
-                  <Select value={resourceType} onValueChange={setResourceType}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="document">Document / PDF</SelectItem>
-                      <SelectItem value="video">Video Link</SelectItem>
-                      <SelectItem value="link">External Link</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                {resourceType === "video" || resourceType === "link" ? (
-                  <div className="space-y-2">
-                    <Label>URL</Label>
-                    <Input value={videoUrl} onChange={(e) => setVideoUrl(e.target.value)} placeholder="https://..." />
-                  </div>
-                ) : (
-                  <div className="space-y-2">
-                    <Label>File</Label>
-                    <Input type="file" onChange={(e) => setFile(e.target.files?.[0] || null)} />
-                  </div>
-                )}
-                <Button type="submit" className="w-full" disabled={submitting}>
-                  {submitting ? "Uploading..." : "Upload"}
-                </Button>
-              </form>
-            </DialogContent>
-          </Dialog>
+          <Button onClick={openCreate}><Plus className="h-4 w-4 mr-2" />Upload Resource</Button>
         )}
       </div>
+
+      <Dialog open={dialogOpen} onOpenChange={(open) => { setDialogOpen(open); if (!open) resetForm(); }}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="font-['Space_Grotesk']">
+              {editingResource ? "Edit Resource" : "Upload Resource"}
+            </DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label>Title</Label>
+              <Input value={title} onChange={(e) => setTitle(e.target.value)} required />
+            </div>
+            <div className="space-y-2">
+              <Label>Description</Label>
+              <Textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={3} />
+            </div>
+            <div className="space-y-2">
+              <Label>Type</Label>
+              <Select value={resourceType} onValueChange={setResourceType}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="document">Document / PDF</SelectItem>
+                  <SelectItem value="video">Video Link</SelectItem>
+                  <SelectItem value="link">External Link</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            {resourceType === "video" || resourceType === "link" ? (
+              <div className="space-y-2">
+                <Label>URL</Label>
+                <Input value={videoUrl} onChange={(e) => setVideoUrl(e.target.value)} placeholder="https://..." />
+              </div>
+            ) : (
+              <div className="space-y-2">
+                <Label>File {editingResource?.file_url && "(leave empty to keep current)"}</Label>
+                <Input type="file" onChange={(e) => setFile(e.target.files?.[0] || null)} />
+              </div>
+            )}
+            <Button type="submit" className="w-full" disabled={submitting}>
+              {submitting ? (editingResource ? "Saving..." : "Uploading...") : (editingResource ? "Save Changes" : "Upload")}
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
 
       {loading ? (
         <div className="flex justify-center py-16">
@@ -225,9 +261,14 @@ const ResourcesPage = () => {
                     <Badge variant="outline" className="capitalize text-xs">{r.resource_type}</Badge>
                   </div>
                   {(role === "admin" || r.uploaded_by === user?.id) && (
-                    <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive" onClick={() => handleDelete(r.id)}>
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
+                    <div className="flex gap-1">
+                      <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-primary" onClick={() => openEdit(r)}>
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                      <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive" onClick={() => handleDelete(r.id)}>
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
                   )}
                 </div>
                 <CardTitle className="text-base font-['Space_Grotesk'] mt-2">{r.title}</CardTitle>
