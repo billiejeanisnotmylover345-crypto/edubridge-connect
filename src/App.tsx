@@ -8,6 +8,7 @@ import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import CompleteProfile from "./pages/CompleteProfile";
+import ProfilePage from "./pages/ProfilePage";
 import Dashboard from "./pages/Dashboard";
 import ResourcesPage from "./pages/dashboard/ResourcesPage";
 import SessionsPage from "./pages/dashboard/SessionsPage";
@@ -32,6 +33,7 @@ const App = () => (
             <Route path="/register" element={<Register />} />
             <Route path="/complete-profile" element={<CompleteProfile />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/dashboard/profile" element={<ProfilePage editMode />} />
             <Route path="/dashboard/mentor" element={<MentorViewPage />} />
             <Route path="/dashboard/students" element={<StudentsPage />} />
             <Route path="/dashboard/users" element={<PlaceholderPage title="User Management" />} />

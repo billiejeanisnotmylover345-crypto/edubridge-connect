@@ -120,7 +120,10 @@ function AppSidebar() {
 
         {/* Bottom user section */}
         <div className="mt-auto p-4 border-t border-sidebar-border">
-          <div className="flex items-center gap-3 mb-3">
+          <Link
+            to="/dashboard/profile"
+            className="flex items-center gap-3 mb-3 rounded-md p-1 -m-1 hover:bg-sidebar-accent/50 transition-colors cursor-pointer"
+          >
             <Avatar className="h-8 w-8">
               <AvatarFallback className="bg-primary/10 text-primary text-xs">
                 {initials}
@@ -132,7 +135,7 @@ function AppSidebar() {
                 <p className="text-xs text-muted-foreground capitalize">{role}</p>
               </div>
             )}
-          </div>
+          </Link>
           <Button
             variant="ghost"
             size="sm"
