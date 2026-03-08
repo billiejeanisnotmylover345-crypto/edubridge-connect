@@ -14,6 +14,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { MessageSquare, Plus, Send, CheckCircle2 } from "lucide-react";
 import { format } from "date-fns";
+import { logMockEmail } from "@/lib/emailLogger";
 
 interface Answer {
   id: string;
@@ -133,6 +134,13 @@ const QAPage = () => {
           message: `Someone answered your question`,
           type: "qa",
           link: "/dashboard/qa",
+        });
+
+        await logMockEmail({
+          recipientId: askedBy,
+          emailType: "question_answered",
+          subject: "Your question received an answer",
+          body: `Someone answered your question on EduBridge. Log in to view the response.`,
         });
       }
 

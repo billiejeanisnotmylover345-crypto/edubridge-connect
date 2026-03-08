@@ -8,6 +8,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { UserCircle, CheckCircle, X } from "lucide-react";
 import { toast } from "sonner";
+import { logMockEmail } from "@/lib/emailLogger";
 
 interface MentorProfile {
   user_id: string;
@@ -92,6 +93,23 @@ const MentorViewPage = () => {
       if (error) throw error;
 
       await supabase.from("waiting_list").delete().eq("learner_id", user.id);
+
+      // Notify mentor
+      await supabase.from("notifications").insert({
+        user_id: mentorId,
+        title: "New Student",
+        message: "A new learner has been assigned to you.",
+        type: "assignment",
+        link: "/dashboard/students",
+      });
+
+      await logMockEmail({
+        recipientId: mentorId,
+        emailType: "mentor_assignment",
+        subject: "New student assigned to you",
+        body: "A new learner has selected you as their mentor on EduBridge.",
+      });
+
       toast.success("Mentor added successfully!");
       await fetchData();
     } catch (err: any) {

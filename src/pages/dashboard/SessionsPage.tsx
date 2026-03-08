@@ -7,12 +7,15 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import DashboardLayout from "@/components/DashboardLayout";
+import SessionCalendar from "@/components/SessionCalendar";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Calendar, Plus, Clock, User, Link as LinkIcon, ExternalLink, Pencil } from "lucide-react";
+import { Calendar, Plus, Clock, User, Link as LinkIcon, ExternalLink, Pencil, List, CalendarDays } from "lucide-react";
 import { format } from "date-fns";
+import { logMockEmail } from "@/lib/emailLogger";
 
 interface Session {
   id: string;
@@ -43,6 +46,8 @@ const SessionsPage = () => {
   const [learners, setLearners] = useState<{ id: string; name: string }[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [editingSession, setEditingSession] = useState<Session | null>(null);
+  const [viewMode, setViewMode] = useState<"list" | "calendar">("list");
+  const [calendarMonth, setCalendarMonth] = useState(new Date());
 
   const canCreate = role === "mentor" || role === "admin";
 
@@ -160,6 +165,14 @@ const SessionsPage = () => {
           type: "session",
           link: "/dashboard/sessions",
         });
+
+        await logMockEmail({
+          recipientId: selectedLearner,
+          emailType: "session_scheduled",
+          subject: `New Session: ${title}`,
+          body: `Your mentor has scheduled a session "${title}" for ${format(new Date(scheduledAt), "MMM d, yyyy 'at' h:mm a")}. Log in to EduBridge to view details.`,
+        });
+
         toast.success("Session created!");
       }
 
@@ -197,6 +210,16 @@ const SessionsPage = () => {
     }
   };
 
+  const handleCalendarSessionClick = (session: Session) => {
+    // Find the full session with names
+    const fullSession = sessions.find((s) => s.id === session.id);
+    if (fullSession && canCreate) {
+      openEdit(fullSession);
+    } else if (fullSession) {
+      handleSessionClick(fullSession);
+    }
+  };
+
   return (
     <DashboardLayout>
       <div className="mb-8 flex items-center justify-between">
@@ -204,9 +227,21 @@ const SessionsPage = () => {
           <h1 className="text-3xl font-bold font-['Space_Grotesk']">Mentorship Sessions</h1>
           <p className="text-muted-foreground mt-1">View and manage your sessions.</p>
         </div>
-        {canCreate && (
-          <Button onClick={openCreate}><Plus className="h-4 w-4 mr-2" />New Session</Button>
-        )}
+        <div className="flex items-center gap-3">
+          <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as "list" | "calendar")}>
+            <TabsList>
+              <TabsTrigger value="list" className="gap-1.5">
+                <List className="h-3.5 w-3.5" /> List
+              </TabsTrigger>
+              <TabsTrigger value="calendar" className="gap-1.5">
+                <CalendarDays className="h-3.5 w-3.5" /> Calendar
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
+          {canCreate && (
+            <Button onClick={openCreate}><Plus className="h-4 w-4 mr-2" />New Session</Button>
+          )}
+        </div>
       </div>
 
       <Dialog open={dialogOpen} onOpenChange={(open) => { setDialogOpen(open); if (!open) resetForm(); }}>
@@ -272,6 +307,13 @@ const SessionsPage = () => {
         <div className="flex justify-center py-16">
           <div className="h-8 w-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
         </div>
+      ) : viewMode === "calendar" ? (
+        <SessionCalendar
+          sessions={sessions}
+          currentMonth={calendarMonth}
+          onMonthChange={setCalendarMonth}
+          onSessionClick={handleCalendarSessionClick}
+        />
       ) : sessions.length === 0 ? (
         <Card className="border-border/50">
           <CardContent className="pt-6">
