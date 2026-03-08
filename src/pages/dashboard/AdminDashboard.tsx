@@ -48,6 +48,8 @@ const AdminDashboard = () => {
   const [recentActivity, setRecentActivity] = useState<RecentActivity[]>([]);
   const [roleData, setRoleData] = useState<{ name: string; value: number }[]>([]);
   const [sessionData, setSessionData] = useState<{ name: string; count: number }[]>([]);
+  const [signupTrend, setSignupTrend] = useState<{ date: string; count: number }[]>([]);
+  const [activityTrend, setActivityTrend] = useState<{ date: string; sessions: number; questions: number }[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
