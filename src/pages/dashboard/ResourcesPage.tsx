@@ -173,6 +173,41 @@ const ResourcesPage = () => {
       default: return "bg-primary/10 text-primary";
     }
   };
+  const getStoragePathFromPublicUrl = (url: string) => {
+    try {
+      const parsed = new URL(url);
+      const marker = "/storage/v1/object/public/resources/";
+      const markerIndex = parsed.pathname.indexOf(marker);
+      if (markerIndex === -1) return null;
+      return decodeURIComponent(parsed.pathname.slice(markerIndex + marker.length));
+    } catch {
+      return null;
+    }
+  };
+
+  const handleResourceAction = (resource: Resource) => {
+    const targetUrl = resource.file_url || resource.video_url;
+    if (!targetUrl) return;
+
+    if (resource.resource_type === "video" || resource.resource_type === "link") {
+      window.open(targetUrl, "_blank", "noopener,noreferrer");
+      return;
+    }
+
+    if (!resource.file_url) return;
+
+    const storagePath = getStoragePathFromPublicUrl(resource.file_url);
+    if (storagePath) {
+      const { data } = supabase.storage.from("resources").getPublicUrl(storagePath, {
+        download: `${resource.title || "resource"}`,
+      });
+      window.open(data.publicUrl, "_blank", "noopener,noreferrer");
+      return;
+    }
+
+    const forceDownloadUrl = `${resource.file_url}${resource.file_url.includes("?") ? "&" : "?"}download=1`;
+    window.open(forceDownloadUrl, "_blank", "noopener,noreferrer");
+  };
 
 
   return (
