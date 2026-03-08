@@ -140,8 +140,10 @@ const Landing = () => {
               <Card className="h-full border-border/50 fun-card group relative overflow-hidden">
                 <div className={`absolute inset-0 ${feature.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-300`} />
                 <CardContent className="pt-6 relative z-10">
-                  <div className="text-4xl mb-3 animate-float" style={{ animationDelay: `${i * 0.5}s` }}>
-                    {feature.emoji}
+                  <div
+                    className={`h-12 w-12 rounded-xl ${feature.gradient} flex items-center justify-center mb-4 shadow-md`}
+                  >
+                    <feature.icon className="h-6 w-6 text-white" />
                   </div>
                   <h3 className="font-bold text-lg mb-2 font-['Space_Grotesk']">
                     {feature.title}
