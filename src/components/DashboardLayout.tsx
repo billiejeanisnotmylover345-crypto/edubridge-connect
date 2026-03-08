@@ -37,17 +37,21 @@ import { useLocation } from "react-router-dom";
 const learnerNav = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "My Mentor", url: "/dashboard/mentor", icon: UserCircle },
+  { title: "Progress", url: "/dashboard/progress", icon: Target },
   { title: "Resources", url: "/dashboard/resources", icon: BookOpen },
   { title: "Sessions", url: "/dashboard/sessions", icon: Calendar },
   { title: "Q&A", url: "/dashboard/qa", icon: MessageSquare },
+  { title: "Chat", url: "/dashboard/chat", icon: MessageCircle },
 ];
 
 const mentorNav = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "My Students", url: "/dashboard/students", icon: Users },
+  { title: "Progress", url: "/dashboard/progress", icon: Target },
   { title: "Resources", url: "/dashboard/resources", icon: BookOpen },
   { title: "Sessions", url: "/dashboard/sessions", icon: Calendar },
   { title: "Q&A", url: "/dashboard/qa", icon: MessageSquare },
+  { title: "Chat", url: "/dashboard/chat", icon: MessageCircle },
 ];
 
 const adminNav = [
