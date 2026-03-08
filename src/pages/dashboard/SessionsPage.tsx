@@ -49,6 +49,8 @@ const SessionsPage = () => {
   const [editingSession, setEditingSession] = useState<Session | null>(null);
   const [viewMode, setViewMode] = useState<"list" | "calendar">("list");
   const [calendarMonth, setCalendarMonth] = useState(new Date());
+  const [ratingSession, setRatingSession] = useState<Session | null>(null);
+  const [ratedSessionIds, setRatedSessionIds] = useState<Set<string>>(new Set());
 
   const canCreate = role === "mentor" || role === "admin";
 
