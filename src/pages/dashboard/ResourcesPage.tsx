@@ -11,7 +11,7 @@ import DashboardLayout from "@/components/DashboardLayout";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { BookOpen, Plus, FileText, Video, Link2, Download, Trash2, Pencil, Eye, X } from "lucide-react";
+import { BookOpen, Plus, FileText, Video, Link2, Download, Trash2, Pencil } from "lucide-react";
 import { format } from "date-fns";
 
 interface Resource {
@@ -30,7 +30,7 @@ const ResourcesPage = () => {
   const { user, role } = useAuth();
   const [resources, setResources] = useState<Resource[]>([]);
   const [loading, setLoading] = useState(true);
-  const [previewResource, setPreviewResource] = useState<Resource | null>(null);
+  
   const [dialogOpen, setDialogOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -174,65 +174,6 @@ const ResourcesPage = () => {
     }
   };
 
-  const getYouTubeEmbedUrl = (url: string) => {
-    const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/))([^?&]+)/);
-    return match ? `https://www.youtube.com/embed/${match[1]}` : null;
-  };
-
-  const renderPreview = (r: Resource) => {
-    const url = r.file_url || r.video_url || "";
-
-    if (r.resource_type === "video" && r.video_url) {
-      const embedUrl = getYouTubeEmbedUrl(r.video_url);
-      if (embedUrl) {
-        return (
-          <iframe
-            src={embedUrl}
-            className="w-full aspect-video rounded-lg"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-          />
-        );
-      }
-      return (
-        <video src={r.video_url} controls className="w-full rounded-lg max-h-[60vh]">
-          Your browser does not support the video tag.
-        </video>
-      );
-    }
-
-    if (r.resource_type === "link" && r.video_url) {
-      return (
-        <div className="flex flex-col items-center justify-center py-12 gap-4">
-          <Link2 className="h-12 w-12 text-muted-foreground" />
-          <p className="text-muted-foreground">External link — opens in a new tab</p>
-          <a href={r.video_url} target="_blank" rel="noopener noreferrer">
-            <Button>Open Link <Link2 className="h-4 w-4 ml-2" /></Button>
-          </a>
-        </div>
-      );
-    }
-
-    // Document/file preview
-    if (r.file_url) {
-      const lower = r.file_url.toLowerCase();
-      const isImage = /\.(jpg|jpeg|png|gif|webp|svg)(\?|$)/i.test(lower);
-      if (isImage) {
-        return <img src={r.file_url} alt={r.title} className="max-w-full max-h-[70vh] rounded-lg mx-auto" />;
-      }
-      // PDF, HTML, HTM and other browser-renderable files — use iframe
-      return (
-        <iframe
-          src={r.file_url}
-          className="w-full h-[70vh] rounded-lg border border-border"
-          title={r.title}
-          sandbox="allow-same-origin allow-scripts"
-        />
-      );
-    }
-
-    return <p className="text-muted-foreground text-center py-8">No content available to preview.</p>;
-  };
 
   return (
     <DashboardLayout>
@@ -340,20 +281,13 @@ const ResourcesPage = () => {
                   <span>by {r.uploader_name}</span>
                   <span>{format(new Date(r.created_at), "MMM d, yyyy")}</span>
                 </div>
-                {(r.file_url || r.video_url) && (
+                    {(r.file_url || r.video_url) && (
                   <div className="mt-3 flex items-center gap-3">
-                    <button
-                      onClick={() => setPreviewResource(r)}
-                      className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
-                    >
-                      <Eye className="h-3 w-3" />
-                      {r.resource_type === "video" ? "Watch" : "View"}
-                    </button>
                     <a
                       href={r.file_url || r.video_url || "#"}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-primary hover:underline"
+                      className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
                     >
                       <Download className="h-3 w-3" />
                       {r.resource_type === "link" ? "Open Link" : "Download"}
@@ -366,17 +300,6 @@ const ResourcesPage = () => {
         </div>
       )}
 
-      {/* Preview Dialog */}
-      <Dialog open={!!previewResource} onOpenChange={(open) => { if (!open) setPreviewResource(null); }}>
-        <DialogContent className="max-w-4xl w-[95vw] max-h-[90vh] flex flex-col">
-          <DialogHeader>
-            <DialogTitle className="font-['Space_Grotesk']">{previewResource?.title}</DialogTitle>
-          </DialogHeader>
-          <div className="flex-1 min-h-0 overflow-auto">
-            {previewResource && renderPreview(previewResource)}
-          </div>
-        </DialogContent>
-      </Dialog>
     </DashboardLayout>
   );
 };
