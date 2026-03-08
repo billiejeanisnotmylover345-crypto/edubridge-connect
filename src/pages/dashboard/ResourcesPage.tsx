@@ -318,15 +318,14 @@ const ResourcesPage = () => {
                 </div>
                     {(r.file_url || r.video_url) && (
                   <div className="mt-3 flex items-center gap-3">
-                    <a
-                      href={r.file_url || r.video_url || "#"}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                    <button
+                      type="button"
+                      onClick={() => handleResourceAction(r)}
                       className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
                     >
                       <Download className="h-3 w-3" />
                       {r.resource_type === "link" ? "Open Link" : "Download"}
-                    </a>
+                    </button>
                   </div>
                 )}
               </CardContent>
