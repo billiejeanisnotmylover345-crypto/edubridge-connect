@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import NotificationFeed from "@/components/NotificationFeed";
+import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Users, Calendar, MessageSquare, BookOpen } from "lucide-react";
 import { motion } from "framer-motion";
