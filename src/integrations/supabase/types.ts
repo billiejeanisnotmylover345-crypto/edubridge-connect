@@ -46,6 +46,33 @@ export type Database = {
           },
         ]
       }
+      email_logs: {
+        Row: {
+          body: string
+          created_at: string
+          email_type: string
+          id: string
+          recipient_id: string
+          subject: string
+        }
+        Insert: {
+          body?: string
+          created_at?: string
+          email_type?: string
+          id?: string
+          recipient_id: string
+          subject: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          email_type?: string
+          id?: string
+          recipient_id?: string
+          subject?: string
+        }
+        Relationships: []
+      }
       mentor_assignments: {
         Row: {
           created_at: string
