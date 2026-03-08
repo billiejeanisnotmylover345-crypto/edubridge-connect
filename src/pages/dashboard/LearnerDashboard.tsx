@@ -35,6 +35,12 @@ const LearnerDashboard = () => {
       setResourceCount(resCount.count || 0);
       setSessionCount(sessCount.count || 0);
       setQuestionCount(qCount.count || 0);
+      const milestones = milestonesRes.data || [];
+      setMilestoneProgress({
+        total: milestones.length,
+        completed: milestones.filter((m: any) => m.completed).length,
+      });
+      setUnreadMessages(unreadRes.count || 0);
     };
     fetchData();
   }, [user]);
