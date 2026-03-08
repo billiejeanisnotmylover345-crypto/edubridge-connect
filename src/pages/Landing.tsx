@@ -8,30 +8,26 @@ const features = [
   {
     icon: Users,
     title: "Smart Mentor Matching",
-    description: "Get paired with the perfect mentor automatically. No waiting around! 🎯",
+    description: "Get paired with the perfect mentor automatically. No waiting around!",
     gradient: "gradient-cool",
-    emoji: "🤝",
   },
   {
     icon: BookOpen,
     title: "Learning Resources",
-    description: "Videos, docs, and guides from your mentors — all in one place! 📚",
+    description: "Videos, docs, and guides from your mentors — all in one place!",
     gradient: "gradient-warm",
-    emoji: "📖",
   },
   {
     icon: GraduationCap,
     title: "Live Sessions",
-    description: "Jump into scheduled sessions with your mentor. Easy peasy! 🎓",
+    description: "Jump into scheduled sessions with your mentor. Easy peasy!",
     gradient: "gradient-fresh",
-    emoji: "🎥",
   },
   {
     icon: BarChart3,
     title: "Track Progress",
-    description: "See how far you've come with milestones and progress bars! 📊",
+    description: "See how far you've come with milestones and progress bars!",
     gradient: "gradient-fun",
-    emoji: "🚀",
   },
 ];
 
@@ -61,7 +57,7 @@ const Landing = () => {
               <Link to="/login">Log in</Link>
             </Button>
             <Button asChild className="rounded-full gradient-fun border-0 shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-shadow">
-              <Link to="/register">Get Started ✨</Link>
+              <Link to="/register">Get Started</Link>
             </Button>
           </div>
         </div>
@@ -97,18 +93,11 @@ const Landing = () => {
             <span className="gradient-text">
               Better Learning
             </span>
-            <motion.span
-              animate={{ rotate: [0, 14, -8, 14, -4, 10, 0] }}
-              transition={{ duration: 2.5, repeat: Infinity, repeatDelay: 3 }}
-              className="inline-block ml-3"
-            >
-              🎉
-            </motion.span>
           </h1>
 
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">
             Connect with awesome mentors, crush your goals, and level up your skills.
-            Learning has never been this <span className="font-semibold text-primary">fun</span>! ⚡
+            Learning has never been this <span className="font-semibold text-primary">fun</span>!
           </p>
 
           <div className="flex items-center justify-center gap-4 flex-wrap">
@@ -118,33 +107,8 @@ const Landing = () => {
               </Link>
             </Button>
             <Button size="lg" variant="outline" asChild className="text-base px-8 rounded-full border-2 hover:scale-105 transition-all">
-              <Link to="/login">I have an account 👋</Link>
+              <Link to="/login">I have an account</Link>
             </Button>
-          </div>
-
-          {/* Fun floating elements */}
-          <div className="hidden md:block">
-            <motion.div
-              animate={{ y: [-8, 8, -8] }}
-              transition={{ duration: 4, repeat: Infinity }}
-              className="absolute top-10 right-10 text-4xl"
-            >
-              ⭐
-            </motion.div>
-            <motion.div
-              animate={{ y: [6, -6, 6] }}
-              transition={{ duration: 3.5, repeat: Infinity }}
-              className="absolute bottom-20 left-10 text-3xl"
-            >
-              💡
-            </motion.div>
-            <motion.div
-              animate={{ y: [-5, 10, -5], rotate: [0, 10, 0] }}
-              transition={{ duration: 5, repeat: Infinity }}
-              className="absolute top-40 left-0 text-2xl"
-            >
-              🎨
-            </motion.div>
           </div>
         </motion.div>
       </section>
@@ -153,7 +117,7 @@ const Landing = () => {
       <section className="container mx-auto px-4 pb-28 relative z-10">
         <div className="text-center mb-14">
           <h2 className="text-3xl md:text-4xl font-bold font-['Space_Grotesk'] mb-3">
-            Everything you need to <span className="gradient-text">succeed</span> 🏆
+            Everything you need to <span className="gradient-text">succeed</span>
           </h2>
           <p className="text-muted-foreground max-w-lg mx-auto text-lg">
             A platform that makes learning feel like an adventure.
@@ -172,8 +136,10 @@ const Landing = () => {
               <Card className="h-full border-border/50 fun-card group relative overflow-hidden">
                 <div className={`absolute inset-0 ${feature.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-300`} />
                 <CardContent className="pt-6 relative z-10">
-                  <div className="text-4xl mb-3 animate-float" style={{ animationDelay: `${i * 0.5}s` }}>
-                    {feature.emoji}
+                  <div
+                    className={`h-12 w-12 rounded-xl ${feature.gradient} flex items-center justify-center mb-4 shadow-md`}
+                  >
+                    <feature.icon className="h-6 w-6 text-white" />
                   </div>
                   <h3 className="font-bold text-lg mb-2 font-['Space_Grotesk']">
                     {feature.title}
@@ -197,7 +163,7 @@ const Landing = () => {
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjEpIi8+PC9zdmc+')] opacity-50" />
           <div className="relative z-10">
             <h2 className="text-3xl md:text-4xl font-bold font-['Space_Grotesk'] text-white mb-4">
-              Ready to start your journey? 🚀
+              Ready to start your journey?
             </h2>
             <p className="text-white/80 text-lg mb-8 max-w-md mx-auto">
               Join thousands of learners already crushing their goals on EduBridge.
@@ -218,7 +184,7 @@ const Landing = () => {
       {/* Footer */}
       <footer className="border-t border-border/50 py-8">
         <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
-          © 2026 EduBridge. Built for learning, powered by mentorship. ✨
+          © 2026 EduBridge. Built for learning, powered by mentorship.
         </div>
       </footer>
     </div>

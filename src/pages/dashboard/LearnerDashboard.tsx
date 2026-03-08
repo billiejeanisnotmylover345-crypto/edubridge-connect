@@ -60,12 +60,12 @@ const LearnerDashboard = () => {
     : "0";
 
   const stats = [
-    { label: "My Mentors", value: mentorCount > 0 ? mentorCount.toString() : (isOnWaitingList ? "Waiting..." : "None"), icon: UserCircle, emoji: "🧑‍🏫", gradient: "gradient-cool" },
-    { label: "Progress", value: progressLabel, icon: Target, emoji: "🎯", gradient: "gradient-fresh" },
-    { label: "Resources", value: resourceCount.toString(), icon: BookOpen, emoji: "📚", gradient: "gradient-warm" },
-    { label: "Sessions", value: sessionCount.toString(), icon: Calendar, emoji: "📅", gradient: "gradient-fun" },
-    { label: "Questions", value: questionCount.toString(), icon: MessageSquare, emoji: "❓", gradient: "gradient-cool" },
-    { label: "Messages", value: unreadMessages.toString(), icon: MessageCircle, emoji: "💬", gradient: "gradient-warm" },
+    { label: "My Mentors", value: mentorCount > 0 ? mentorCount.toString() : (isOnWaitingList ? "Waiting..." : "None"), icon: UserCircle, gradient: "gradient-cool" },
+    { label: "Progress", value: progressLabel, icon: Target, gradient: "gradient-fresh" },
+    { label: "Resources", value: resourceCount.toString(), icon: BookOpen, gradient: "gradient-warm" },
+    { label: "Sessions", value: sessionCount.toString(), icon: Calendar, gradient: "gradient-fun" },
+    { label: "Questions", value: questionCount.toString(), icon: MessageSquare, gradient: "gradient-cool" },
+    { label: "Messages", value: unreadMessages.toString(), icon: MessageCircle, gradient: "gradient-warm" },
   ];
 
   return (
@@ -76,9 +76,9 @@ const LearnerDashboard = () => {
           animate={{ opacity: 1, x: 0 }}
           className="text-3xl font-bold font-['Space_Grotesk']"
         >
-          Welcome back, {profile?.full_name || "Learner"}! 👋
+          Welcome back, {profile?.full_name || "Learner"}!
         </motion.h1>
-        <p className="text-muted-foreground mt-1">Here's an overview of your learning journey ✨</p>
+        <p className="text-muted-foreground mt-1">Here's an overview of your learning journey.</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -92,8 +92,8 @@ const LearnerDashboard = () => {
                     <p className="text-sm text-muted-foreground font-medium">{stat.label}</p>
                     <p className="text-3xl font-bold mt-1 font-['Space_Grotesk']">{stat.value}</p>
                   </div>
-                  <div className="text-3xl animate-float" style={{ animationDelay: `${i * 0.3}s` }}>
-                    {stat.emoji}
+                  <div className={`h-10 w-10 rounded-xl ${stat.gradient} flex items-center justify-center shadow-sm`}>
+                    <stat.icon className="h-5 w-5 text-white" />
                   </div>
                 </div>
               </CardContent>
@@ -107,11 +107,8 @@ const LearnerDashboard = () => {
           <Card className="mt-6 border-warning/30 bg-warning/5">
             <CardContent className="pt-6">
               <div className="flex items-center gap-3">
-                <span className="text-2xl">⏳</span>
-                <div>
-                  <Badge variant="outline" className="border-warning text-warning mb-1">Waiting List</Badge>
-                  <p className="text-sm">Hang tight! A mentor will be assigned to you soon! 🎯</p>
-                </div>
+                <Badge variant="outline" className="border-warning text-warning">Waiting List</Badge>
+                <p className="text-sm">Hang tight! A mentor will be assigned to you soon.</p>
               </div>
             </CardContent>
           </Card>

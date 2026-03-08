@@ -43,7 +43,7 @@ const Login = () => {
               <GraduationCap className="h-6 w-6 text-white" />
             </div>
           </Link>
-          <CardTitle className="text-2xl font-['Space_Grotesk']">Welcome back! 👋</CardTitle>
+          <CardTitle className="text-2xl font-['Space_Grotesk']">Welcome back!</CardTitle>
           <CardDescription>Sign in to continue your journey</CardDescription>
         </CardHeader>
         <CardContent>
@@ -72,13 +72,13 @@ const Login = () => {
               />
             </div>
             <Button type="submit" className="w-full rounded-xl gradient-fun border-0 shadow-md shadow-primary/20 hover:shadow-primary/40 transition-shadow" disabled={isLoading}>
-              {isLoading ? "Signing in..." : "Let's Go! 🚀"}
+              {isLoading ? "Signing in..." : "Let's Go!"}
             </Button>
           </form>
           <p className="text-sm text-center text-muted-foreground mt-6">
             Don't have an account?{" "}
             <Link to="/register" className="text-primary font-semibold hover:underline">
-              Sign up ✨
+              Sign up
             </Link>
           </p>
         </CardContent>

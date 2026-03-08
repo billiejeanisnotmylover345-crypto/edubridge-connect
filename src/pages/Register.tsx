@@ -49,7 +49,7 @@ const Register = () => {
               <GraduationCap className="h-6 w-6 text-white" />
             </div>
           </Link>
-          <CardTitle className="text-2xl font-['Space_Grotesk']">Join EduBridge! 🎉</CardTitle>
+          <CardTitle className="text-2xl font-['Space_Grotesk']">Join EduBridge!</CardTitle>
           <CardDescription>Create your account and start your adventure</CardDescription>
         </CardHeader>
         <CardContent>
@@ -97,19 +97,19 @@ const Register = () => {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="learner">🎓 Learner (Student)</SelectItem>
-                  <SelectItem value="mentor">🧑‍🏫 Mentor (Teacher)</SelectItem>
+                  <SelectItem value="learner">Learner (Student)</SelectItem>
+                  <SelectItem value="mentor">Mentor (Teacher)</SelectItem>
                 </SelectContent>
               </Select>
             </div>
             <Button type="submit" className="w-full rounded-xl gradient-fun border-0 shadow-md shadow-primary/20 hover:shadow-primary/40 transition-shadow" disabled={isLoading}>
-              {isLoading ? "Creating account..." : "Create Account 🚀"}
+              {isLoading ? "Creating account..." : "Create Account"}
             </Button>
           </form>
           <p className="text-sm text-center text-muted-foreground mt-6">
             Already have an account?{" "}
             <Link to="/login" className="text-primary font-semibold hover:underline">
-              Sign in 👋
+              Sign in
             </Link>
           </p>
         </CardContent>

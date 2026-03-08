@@ -39,10 +39,10 @@ const MentorDashboard = () => {
   }, [user]);
 
   const stats = [
-    { label: "Active Students", value: studentCount.toString(), icon: Users, emoji: "👨‍🎓", gradient: "gradient-cool" },
-    { label: "Resources", value: resourceCount.toString(), icon: BookOpen, emoji: "📚", gradient: "gradient-warm" },
-    { label: "Sessions", value: sessionCount.toString(), icon: Calendar, emoji: "📅", gradient: "gradient-fun" },
-    { label: "Open Questions", value: questionCount.toString(), icon: MessageSquare, emoji: "❓", gradient: "gradient-fresh" },
+    { label: "Active Students", value: studentCount.toString(), icon: Users, gradient: "gradient-cool" },
+    { label: "Resources", value: resourceCount.toString(), icon: BookOpen, gradient: "gradient-warm" },
+    { label: "Sessions", value: sessionCount.toString(), icon: Calendar, gradient: "gradient-fun" },
+    { label: "Open Questions", value: questionCount.toString(), icon: MessageSquare, gradient: "gradient-fresh" },
   ];
 
   return (
@@ -53,9 +53,9 @@ const MentorDashboard = () => {
           animate={{ opacity: 1, x: 0 }}
           className="text-3xl font-bold font-['Space_Grotesk']"
         >
-          Welcome back, {profile?.full_name || "Mentor"}! 🌟
+          Welcome back, {profile?.full_name || "Mentor"}!
         </motion.h1>
-        <p className="text-muted-foreground mt-1">Here's your mentorship overview ✨</p>
+        <p className="text-muted-foreground mt-1">Here's your mentorship overview.</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -69,8 +69,8 @@ const MentorDashboard = () => {
                     <p className="text-sm text-muted-foreground font-medium">{stat.label}</p>
                     <p className="text-3xl font-bold mt-1 font-['Space_Grotesk']">{stat.value}</p>
                   </div>
-                  <div className="text-3xl animate-float" style={{ animationDelay: `${i * 0.3}s` }}>
-                    {stat.emoji}
+                  <div className={`h-10 w-10 rounded-xl ${stat.gradient} flex items-center justify-center shadow-sm`}>
+                    <stat.icon className="h-5 w-5 text-white" />
                   </div>
                 </div>
               </CardContent>
