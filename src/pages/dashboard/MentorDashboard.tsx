@@ -39,10 +39,10 @@ const MentorDashboard = () => {
   }, [user]);
 
   const stats = [
-    { label: "Active Students", value: studentCount.toString(), icon: Users, emoji: "👨‍🎓", gradient: "gradient-cool" },
-    { label: "Resources", value: resourceCount.toString(), icon: BookOpen, emoji: "📚", gradient: "gradient-warm" },
-    { label: "Sessions", value: sessionCount.toString(), icon: Calendar, emoji: "📅", gradient: "gradient-fun" },
-    { label: "Open Questions", value: questionCount.toString(), icon: MessageSquare, emoji: "❓", gradient: "gradient-fresh" },
+    { label: "Active Students", value: studentCount.toString(), icon: Users, gradient: "gradient-cool" },
+    { label: "Resources", value: resourceCount.toString(), icon: BookOpen, gradient: "gradient-warm" },
+    { label: "Sessions", value: sessionCount.toString(), icon: Calendar, gradient: "gradient-fun" },
+    { label: "Open Questions", value: questionCount.toString(), icon: MessageSquare, gradient: "gradient-fresh" },
   ];
 
   return (
