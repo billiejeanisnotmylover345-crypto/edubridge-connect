@@ -359,17 +359,6 @@ const ResourcesPage = () => {
         </div>
       )}
 
-      {/* Preview Dialog */}
-      <Dialog open={!!previewResource} onOpenChange={(open) => { if (!open) setPreviewResource(null); }}>
-        <DialogContent className="max-w-4xl w-[95vw] max-h-[90vh] flex flex-col">
-          <DialogHeader>
-            <DialogTitle className="font-['Space_Grotesk']">{previewResource?.title}</DialogTitle>
-          </DialogHeader>
-          <div className="flex-1 min-h-0 overflow-auto">
-            {previewResource && renderPreview(previewResource)}
-          </div>
-        </DialogContent>
-      </Dialog>
     </DashboardLayout>
   );
 };
