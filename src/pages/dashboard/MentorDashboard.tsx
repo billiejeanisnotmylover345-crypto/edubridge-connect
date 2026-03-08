@@ -53,9 +53,9 @@ const MentorDashboard = () => {
           animate={{ opacity: 1, x: 0 }}
           className="text-3xl font-bold font-['Space_Grotesk']"
         >
-          Welcome back, {profile?.full_name || "Mentor"}! 🌟
+          Welcome back, {profile?.full_name || "Mentor"}!
         </motion.h1>
-        <p className="text-muted-foreground mt-1">Here's your mentorship overview ✨</p>
+        <p className="text-muted-foreground mt-1">Here's your mentorship overview.</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
