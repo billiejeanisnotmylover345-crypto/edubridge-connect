@@ -72,7 +72,7 @@ const Login = () => {
               />
             </div>
             <Button type="submit" className="w-full rounded-xl gradient-fun border-0 shadow-md shadow-primary/20 hover:shadow-primary/40 transition-shadow" disabled={isLoading}>
-              {isLoading ? "Signing in..." : "Let's Go! 🚀"}
+              {isLoading ? "Signing in..." : "Let's Go!"}
             </Button>
           </form>
           <p className="text-sm text-center text-muted-foreground mt-6">
