@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { BookOpen, Calendar, MessageSquare, UserCircle } from "lucide-react";
+import { BookOpen, Calendar, MessageSquare, UserCircle, Target, MessageCircle } from "lucide-react";
 
 const LearnerDashboard = () => {
   const { user, profile } = useAuth();
