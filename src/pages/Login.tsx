@@ -30,7 +30,7 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background px-4 relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center bg-background px-4 relative overflow-hidden page-bg">
       {/* Background blobs */}
       <div className="absolute top-20 left-20 w-64 h-64 bg-primary/15 rounded-full filter blur-3xl animate-blob" />
       <div className="absolute bottom-20 right-20 w-64 h-64 bg-accent/15 rounded-full filter blur-3xl animate-blob animation-delay-2000" />
