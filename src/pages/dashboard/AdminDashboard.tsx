@@ -98,8 +98,48 @@ const AdminDashboard = () => {
         }))
       );
 
+      // Signup trend (last 30 days)
+      const thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+      const signupMap: Record<string, number> = {};
+      profiles.forEach((p) => {
+        const date = new Date(p.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric" });
+        signupMap[date] = (signupMap[date] || 0) + 1;
+      });
+      const last14Days: { date: string; count: number }[] = [];
+      for (let i = 13; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        const label = d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+        last14Days.push({ date: label, count: signupMap[label] || 0 });
+      }
+      setSignupTrend(last14Days);
+
+      // Activity trend (sessions + questions by day, last 14 days)
+      const sessionDateMap: Record<string, number> = {};
+      const questionDateMap: Record<string, number> = {};
+      (sessionsRes.data || []).forEach((s) => {
+        const date = new Date(s.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric" });
+        sessionDateMap[date] = (sessionDateMap[date] || 0) + 1;
+      });
+      (questionsRes.data || []).forEach((q) => {
+        const date = new Date(q.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric" });
+        questionDateMap[date] = (questionDateMap[date] || 0) + 1;
+      });
+      const activityDays: { date: string; sessions: number; questions: number }[] = [];
+      for (let i = 13; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        const label = d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+        activityDays.push({
+          date: label,
+          sessions: sessionDateMap[label] || 0,
+          questions: questionDateMap[label] || 0,
+        });
+      }
+      setActivityTrend(activityDays);
+
       // Recent users (last 5)
-      const profiles = profilesRes.data || [];
       const merged: UserRow[] = profiles.slice(0, 5).map((p) => ({
         user_id: p.user_id,
         full_name: p.full_name,
