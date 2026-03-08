@@ -27,24 +27,31 @@ import {
   GraduationCap,
   UserCircle,
   ClipboardList,
+  Target,
+  MessageCircle,
 } from "lucide-react";
 import NotificationBell from "@/components/NotificationBell";
+import ThemeToggle from "@/components/ThemeToggle";
 import { useLocation } from "react-router-dom";
 
 const learnerNav = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "My Mentor", url: "/dashboard/mentor", icon: UserCircle },
+  { title: "Progress", url: "/dashboard/progress", icon: Target },
   { title: "Resources", url: "/dashboard/resources", icon: BookOpen },
   { title: "Sessions", url: "/dashboard/sessions", icon: Calendar },
   { title: "Q&A", url: "/dashboard/qa", icon: MessageSquare },
+  { title: "Chat", url: "/dashboard/chat", icon: MessageCircle },
 ];
 
 const mentorNav = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "My Students", url: "/dashboard/students", icon: Users },
+  { title: "Progress", url: "/dashboard/progress", icon: Target },
   { title: "Resources", url: "/dashboard/resources", icon: BookOpen },
   { title: "Sessions", url: "/dashboard/sessions", icon: Calendar },
   { title: "Q&A", url: "/dashboard/qa", icon: MessageSquare },
+  { title: "Chat", url: "/dashboard/chat", icon: MessageCircle },
 ];
 
 const adminNav = [
@@ -163,7 +170,10 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
         <div className="flex-1 flex flex-col">
           <header className="h-14 flex items-center justify-between border-b border-border px-4">
             <SidebarTrigger />
-            <NotificationBell />
+            <div className="flex items-center gap-2">
+              <ThemeToggle />
+              <NotificationBell />
+            </div>
           </header>
           <main className="flex-1 p-6">{children}</main>
         </div>

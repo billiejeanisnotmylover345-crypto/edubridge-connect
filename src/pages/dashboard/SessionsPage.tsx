@@ -13,7 +13,8 @@ import SessionCalendar from "@/components/SessionCalendar";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Calendar, Plus, Clock, User, Link as LinkIcon, ExternalLink, Pencil, List, CalendarDays } from "lucide-react";
+import { Calendar, Plus, Clock, User, Link as LinkIcon, ExternalLink, Pencil, List, CalendarDays, Star } from "lucide-react";
+import SessionRatingDialog from "@/components/SessionRatingDialog";
 import { format } from "date-fns";
 import { logMockEmail } from "@/lib/emailLogger";
 
@@ -48,6 +49,8 @@ const SessionsPage = () => {
   const [editingSession, setEditingSession] = useState<Session | null>(null);
   const [viewMode, setViewMode] = useState<"list" | "calendar">("list");
   const [calendarMonth, setCalendarMonth] = useState(new Date());
+  const [ratingSession, setRatingSession] = useState<Session | null>(null);
+  const [ratedSessionIds, setRatedSessionIds] = useState<Set<string>>(new Set());
 
   const canCreate = role === "mentor" || role === "admin";
 
@@ -96,9 +99,19 @@ const SessionsPage = () => {
     }
   };
 
+  const fetchRatedSessions = async () => {
+    if (!user || role !== "learner") return;
+    const { data } = await supabase
+      .from("session_ratings")
+      .select("session_id")
+      .eq("learner_id", user.id);
+    setRatedSessionIds(new Set(data?.map((d: any) => d.session_id) || []));
+  };
+
   useEffect(() => {
     fetchSessions();
     fetchLearners();
+    fetchRatedSessions();
   }, [user]);
 
   const resetForm = () => {
@@ -391,12 +404,37 @@ const SessionsPage = () => {
                         </Button>
                       </div>
                     )}
+                    {role === "learner" && s.status === "completed" && !ratedSessionIds.has(s.id) && (
+                      <div className="ml-4" onClick={(e) => e.stopPropagation()}>
+                        <Button size="sm" variant="outline" onClick={() => setRatingSession(s)}>
+                          <Star className="h-3.5 w-3.5 mr-1" /> Rate
+                        </Button>
+                      </div>
+                    )}
+                    {ratedSessionIds.has(s.id) && (
+                      <div className="ml-4 flex items-center gap-1 text-xs text-[hsl(var(--warning))]">
+                        <Star className="h-3.5 w-3.5 fill-current" /> Rated
+                      </div>
+                    )}
                   </div>
                 </CardContent>
               </Card>
             );
           })}
         </div>
+      )}
+
+      {ratingSession && user && (
+        <SessionRatingDialog
+          open={!!ratingSession}
+          onOpenChange={(open) => !open && setRatingSession(null)}
+          sessionId={ratingSession.id}
+          learnerId={user.id}
+          sessionTitle={ratingSession.title}
+          onRated={() => {
+            fetchRatedSessions();
+          }}
+        />
       )}
     </DashboardLayout>
   );
