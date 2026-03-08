@@ -27,8 +27,11 @@ import {
   GraduationCap,
   UserCircle,
   ClipboardList,
+  Target,
+  MessageCircle,
 } from "lucide-react";
 import NotificationBell from "@/components/NotificationBell";
+import ThemeToggle from "@/components/ThemeToggle";
 import { useLocation } from "react-router-dom";
 
 const learnerNav = [
