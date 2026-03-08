@@ -262,12 +262,45 @@ const ChatPage = () => {
                       {getInitials(selectedContact.name)}
                     </AvatarFallback>
                   </Avatar>
-                  <p className="font-medium text-sm">{selectedContact.name}</p>
+                  <p className="font-medium text-sm flex-1">{selectedContact.name}</p>
+                  {showMessageSearch ? (
+                    <div className="flex items-center gap-1">
+                      <Input
+                        value={messageSearch}
+                        onChange={(e) => setMessageSearch(e.target.value)}
+                        placeholder="Search messages..."
+                        className="h-8 w-48 text-sm"
+                        autoFocus
+                      />
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={() => { setShowMessageSearch(false); setMessageSearch(""); }}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ) : (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8"
+                      onClick={() => setShowMessageSearch(true)}
+                    >
+                      <Search className="h-4 w-4" />
+                    </Button>
+                  )}
                 </div>
                 <ScrollArea className="flex-1 p-4">
                   <div className="space-y-3">
-                    {messages.map((m) => {
+                    {messages
+                      .filter((m) =>
+                        !messageSearch || m.body.toLowerCase().includes(messageSearch.toLowerCase())
+                      )
+                      .map((m) => {
                       const isMine = m.sender_id === user?.id;
+                      const highlighted = messageSearch && m.body.toLowerCase().includes(messageSearch.toLowerCase());
                       return (
                         <div key={m.id} className={`flex ${isMine ? "justify-end" : "justify-start"}`}>
                           <div
@@ -275,7 +308,7 @@ const ChatPage = () => {
                               isMine
                                 ? "bg-primary text-primary-foreground rounded-br-md"
                                 : "bg-muted rounded-bl-md"
-                            }`}
+                            } ${highlighted ? "ring-2 ring-[hsl(var(--warning))]" : ""}`}
                           >
                             <p>{m.body}</p>
                             <p className={`text-[10px] mt-1 ${isMine ? "text-primary-foreground/60" : "text-muted-foreground"}`}>
