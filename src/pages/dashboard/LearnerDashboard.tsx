@@ -4,6 +4,16 @@ import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { BookOpen, Calendar, MessageSquare, UserCircle, Target, MessageCircle } from "lucide-react";
+import { motion } from "framer-motion";
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { delay: i * 0.08, duration: 0.4, ease: "easeOut" as const },
+  }),
+};
 
 const LearnerDashboard = () => {
   const { user, profile } = useAuth();
@@ -50,50 +60,62 @@ const LearnerDashboard = () => {
     : "0";
 
   const stats = [
-    { label: "My Mentors", value: mentorCount > 0 ? mentorCount.toString() : (isOnWaitingList ? "Waiting..." : "None"), icon: UserCircle, color: "hsl(262, 83%, 58%)" },
-    { label: "Progress", value: progressLabel, icon: Target, color: "hsl(152, 69%, 40%)" },
-    { label: "Resources", value: resourceCount.toString(), icon: BookOpen, color: "hsl(199, 89%, 48%)" },
-    { label: "Sessions", value: sessionCount.toString(), icon: Calendar, color: "hsl(340, 82%, 52%)" },
-    { label: "Questions", value: questionCount.toString(), icon: MessageSquare, color: "hsl(38, 92%, 50%)" },
-    { label: "Unread Messages", value: unreadMessages.toString(), icon: MessageCircle, color: "hsl(262, 83%, 58%)" },
+    { label: "My Mentors", value: mentorCount > 0 ? mentorCount.toString() : (isOnWaitingList ? "Waiting..." : "None"), icon: UserCircle, emoji: "🧑‍🏫", gradient: "gradient-cool" },
+    { label: "Progress", value: progressLabel, icon: Target, emoji: "🎯", gradient: "gradient-fresh" },
+    { label: "Resources", value: resourceCount.toString(), icon: BookOpen, emoji: "📚", gradient: "gradient-warm" },
+    { label: "Sessions", value: sessionCount.toString(), icon: Calendar, emoji: "📅", gradient: "gradient-fun" },
+    { label: "Questions", value: questionCount.toString(), icon: MessageSquare, emoji: "❓", gradient: "gradient-cool" },
+    { label: "Messages", value: unreadMessages.toString(), icon: MessageCircle, emoji: "💬", gradient: "gradient-warm" },
   ];
 
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-3xl font-bold font-['Space_Grotesk']">
-          Welcome back, {profile?.full_name || "Learner"} 👋
-        </h1>
-        <p className="text-muted-foreground mt-1">Here's an overview of your learning journey.</p>
+        <motion.h1
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="text-3xl font-bold font-['Space_Grotesk']"
+        >
+          Welcome back, {profile?.full_name || "Learner"}! 👋
+        </motion.h1>
+        <p className="text-muted-foreground mt-1">Here's an overview of your learning journey ✨</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {stats.map((stat) => (
-          <Card key={stat.label} className="border-border/50">
-            <CardContent className="pt-6">
-              <div className="flex items-start justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground">{stat.label}</p>
-                  <p className="text-2xl font-bold mt-1 font-['Space_Grotesk']">{stat.value}</p>
+        {stats.map((stat, i) => (
+          <motion.div key={stat.label} custom={i} initial="hidden" animate="visible" variants={cardVariants}>
+            <Card className="border-border/50 fun-card group relative overflow-hidden">
+              <div className={`absolute inset-0 ${stat.gradient} opacity-0 group-hover:opacity-[0.06] transition-opacity duration-300`} />
+              <CardContent className="pt-6 relative z-10">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <p className="text-sm text-muted-foreground font-medium">{stat.label}</p>
+                    <p className="text-3xl font-bold mt-1 font-['Space_Grotesk']">{stat.value}</p>
+                  </div>
+                  <div className="text-3xl animate-float" style={{ animationDelay: `${i * 0.3}s` }}>
+                    {stat.emoji}
+                  </div>
                 </div>
-                <div className="h-10 w-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: `${stat.color}15` }}>
-                  <stat.icon className="h-5 w-5" style={{ color: stat.color }} />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </motion.div>
         ))}
       </div>
 
       {isOnWaitingList && (
-        <Card className="mt-6 border-warning/30 bg-warning/5">
-          <CardContent className="pt-6">
-            <div className="flex items-center gap-3">
-              <Badge variant="outline" className="border-warning text-warning">Waiting List</Badge>
-              <p className="text-sm">You're on the waiting list. A mentor will be assigned to you soon!</p>
-            </div>
-          </CardContent>
-        </Card>
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}>
+          <Card className="mt-6 border-warning/30 bg-warning/5">
+            <CardContent className="pt-6">
+              <div className="flex items-center gap-3">
+                <span className="text-2xl">⏳</span>
+                <div>
+                  <Badge variant="outline" className="border-warning text-warning mb-1">Waiting List</Badge>
+                  <p className="text-sm">Hang tight! A mentor will be assigned to you soon! 🎯</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
       )}
     </div>
   );

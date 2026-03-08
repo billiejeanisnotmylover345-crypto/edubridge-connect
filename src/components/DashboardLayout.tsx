@@ -91,11 +91,11 @@ function AppSidebar() {
       <SidebarContent className="flex flex-col h-full">
         {/* Logo */}
         <div className="p-4 flex items-center gap-2">
-          <div className="h-9 w-9 rounded-lg bg-primary flex items-center justify-center shrink-0">
-            <GraduationCap className="h-5 w-5 text-primary-foreground" />
+          <div className="h-9 w-9 rounded-2xl gradient-fun flex items-center justify-center shrink-0 shadow-md shadow-primary/20">
+            <GraduationCap className="h-5 w-5 text-white" />
           </div>
           {!collapsed && (
-            <span className="text-lg font-bold font-['Space_Grotesk']">EduBridge</span>
+            <span className="text-lg font-bold font-['Space_Grotesk'] gradient-text">EduBridge</span>
           )}
         </div>
 
