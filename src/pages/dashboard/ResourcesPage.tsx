@@ -30,6 +30,8 @@ const ResourcesPage = () => {
   const { user, role } = useAuth();
   const [resources, setResources] = useState<Resource[]>([]);
   const [loading, setLoading] = useState(true);
+  const [previewResource, setPreviewResource] = useState<Resource | null>(null);
+  const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
