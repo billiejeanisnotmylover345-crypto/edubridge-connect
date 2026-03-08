@@ -281,21 +281,42 @@ const ResourcesPage = () => {
                   <span>{format(new Date(r.created_at), "MMM d, yyyy")}</span>
                 </div>
                 {(r.file_url || r.video_url) && (
-                  <a
-                    href={r.file_url || r.video_url || "#"}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-3 inline-flex items-center gap-1 text-sm text-primary hover:underline"
-                  >
-                    <Download className="h-3 w-3" />
-                    {r.resource_type === "video" ? "Watch Video" : r.resource_type === "link" ? "Open Link" : "Download"}
-                  </a>
+                  <div className="mt-3 flex items-center gap-3">
+                    <button
+                      onClick={() => setPreviewResource(r)}
+                      className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
+                    >
+                      <Eye className="h-3 w-3" />
+                      {r.resource_type === "video" ? "Watch" : "View"}
+                    </button>
+                    <a
+                      href={r.file_url || r.video_url || "#"}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-primary hover:underline"
+                    >
+                      <Download className="h-3 w-3" />
+                      {r.resource_type === "link" ? "Open Link" : "Download"}
+                    </a>
+                  </div>
                 )}
               </CardContent>
             </Card>
           ))}
         </div>
       )}
+
+      {/* Preview Dialog */}
+      <Dialog open={!!previewResource} onOpenChange={(open) => { if (!open) setPreviewResource(null); }}>
+        <DialogContent className="max-w-4xl w-[95vw] max-h-[90vh] flex flex-col">
+          <DialogHeader>
+            <DialogTitle className="font-['Space_Grotesk']">{previewResource?.title}</DialogTitle>
+          </DialogHeader>
+          <div className="flex-1 min-h-0 overflow-auto">
+            {previewResource && renderPreview(previewResource)}
+          </div>
+        </DialogContent>
+      </Dialog>
     </DashboardLayout>
   );
 };
