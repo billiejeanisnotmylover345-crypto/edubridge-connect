@@ -135,6 +135,13 @@ const QAPage = () => {
           type: "qa",
           link: "/dashboard/qa",
         });
+
+        await logMockEmail({
+          recipientId: askedBy,
+          emailType: "question_answered",
+          subject: "Your question received an answer",
+          body: `Someone answered your question on EduBridge. Log in to view the response.`,
+        });
       }
 
       toast.success("Answer posted!");
