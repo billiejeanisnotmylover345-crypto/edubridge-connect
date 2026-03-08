@@ -57,7 +57,7 @@ const Landing = () => {
               <Link to="/login">Log in</Link>
             </Button>
             <Button asChild className="rounded-full gradient-fun border-0 shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-shadow">
-              <Link to="/register">Get Started ✨</Link>
+              <Link to="/register">Get Started</Link>
             </Button>
           </div>
         </div>
