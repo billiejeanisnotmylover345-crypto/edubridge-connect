@@ -340,20 +340,13 @@ const ResourcesPage = () => {
                   <span>by {r.uploader_name}</span>
                   <span>{format(new Date(r.created_at), "MMM d, yyyy")}</span>
                 </div>
-                {(r.file_url || r.video_url) && (
+                    {(r.file_url || r.video_url) && (
                   <div className="mt-3 flex items-center gap-3">
-                    <button
-                      onClick={() => setPreviewResource(r)}
-                      className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
-                    >
-                      <Eye className="h-3 w-3" />
-                      {r.resource_type === "video" ? "Watch" : "View"}
-                    </button>
                     <a
                       href={r.file_url || r.video_url || "#"}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-primary hover:underline"
+                      className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
                     >
                       <Download className="h-3 w-3" />
                       {r.resource_type === "link" ? "Open Link" : "Download"}
