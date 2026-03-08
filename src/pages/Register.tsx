@@ -103,7 +103,7 @@ const Register = () => {
               </Select>
             </div>
             <Button type="submit" className="w-full rounded-xl gradient-fun border-0 shadow-md shadow-primary/20 hover:shadow-primary/40 transition-shadow" disabled={isLoading}>
-              {isLoading ? "Creating account..." : "Create Account 🚀"}
+              {isLoading ? "Creating account..." : "Create Account"}
             </Button>
           </form>
           <p className="text-sm text-center text-muted-foreground mt-6">
