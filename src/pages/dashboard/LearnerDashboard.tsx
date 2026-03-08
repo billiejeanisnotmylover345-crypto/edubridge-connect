@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { BookOpen, Calendar, MessageSquare, UserCircle } from "lucide-react";
+import { BookOpen, Calendar, MessageSquare, UserCircle, Target, MessageCircle } from "lucide-react";
 
 const LearnerDashboard = () => {
   const { user, profile } = useAuth();
@@ -12,16 +12,20 @@ const LearnerDashboard = () => {
   const [resourceCount, setResourceCount] = useState(0);
   const [sessionCount, setSessionCount] = useState(0);
   const [questionCount, setQuestionCount] = useState(0);
+  const [milestoneProgress, setMilestoneProgress] = useState({ total: 0, completed: 0 });
+  const [unreadMessages, setUnreadMessages] = useState(0);
 
   useEffect(() => {
     if (!user) return;
     const fetchData = async () => {
-      const [assignRes, waitRes, resCount, sessCount, qCount] = await Promise.all([
+      const [assignRes, waitRes, resCount, sessCount, qCount, milestonesRes, unreadRes] = await Promise.all([
         supabase.from("mentor_assignments").select("mentor_id", { count: "exact", head: true }).eq("learner_id", user.id).eq("status", "active"),
         supabase.from("waiting_list").select("id").eq("learner_id", user.id).maybeSingle(),
         supabase.from("resources").select("*", { count: "exact", head: true }),
         supabase.from("sessions").select("*", { count: "exact", head: true }).eq("learner_id", user.id),
         supabase.from("questions").select("*", { count: "exact", head: true }).eq("asked_by", user.id),
+        supabase.from("milestones").select("id, completed").eq("learner_id", user.id),
+        supabase.from("messages").select("*", { count: "exact", head: true }).eq("receiver_id", user.id).eq("read", false),
       ]);
 
       setMentorCount(assignRes.count || 0);
@@ -31,15 +35,27 @@ const LearnerDashboard = () => {
       setResourceCount(resCount.count || 0);
       setSessionCount(sessCount.count || 0);
       setQuestionCount(qCount.count || 0);
+      const milestones = milestonesRes.data || [];
+      setMilestoneProgress({
+        total: milestones.length,
+        completed: milestones.filter((m: any) => m.completed).length,
+      });
+      setUnreadMessages(unreadRes.count || 0);
     };
     fetchData();
   }, [user]);
 
+  const progressLabel = milestoneProgress.total > 0
+    ? `${milestoneProgress.completed}/${milestoneProgress.total}`
+    : "0";
+
   const stats = [
     { label: "My Mentors", value: mentorCount > 0 ? mentorCount.toString() : (isOnWaitingList ? "Waiting..." : "None"), icon: UserCircle, color: "hsl(262, 83%, 58%)" },
+    { label: "Progress", value: progressLabel, icon: Target, color: "hsl(152, 69%, 40%)" },
     { label: "Resources", value: resourceCount.toString(), icon: BookOpen, color: "hsl(199, 89%, 48%)" },
     { label: "Sessions", value: sessionCount.toString(), icon: Calendar, color: "hsl(340, 82%, 52%)" },
-    { label: "Questions", value: questionCount.toString(), icon: MessageSquare, color: "hsl(152, 69%, 40%)" },
+    { label: "Questions", value: questionCount.toString(), icon: MessageSquare, color: "hsl(38, 92%, 50%)" },
+    { label: "Unread Messages", value: unreadMessages.toString(), icon: MessageCircle, color: "hsl(262, 83%, 58%)" },
   ];
 
   return (
@@ -51,7 +67,7 @@ const LearnerDashboard = () => {
         <p className="text-muted-foreground mt-1">Here's an overview of your learning journey.</p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {stats.map((stat) => (
           <Card key={stat.label} className="border-border/50">
             <CardContent className="pt-6">
