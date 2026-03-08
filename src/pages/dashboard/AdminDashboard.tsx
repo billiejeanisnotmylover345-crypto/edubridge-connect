@@ -312,6 +312,61 @@ const AdminDashboard = () => {
         </Card>
       </div>
 
+      {/* Trend Charts Row */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Signup Trend */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="font-['Space_Grotesk'] text-lg flex items-center gap-2">
+              <TrendingUp className="h-4 w-4" /> Signup Trend
+            </CardTitle>
+            <CardDescription>New users over the last 14 days</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="h-[250px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={signupTrend}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(220, 13%, 91%)" />
+                  <XAxis dataKey="date" tick={{ fontSize: 11 }} />
+                  <YAxis allowDecimals={false} tick={{ fontSize: 11 }} />
+                  <Tooltip />
+                  <Area
+                    type="monotone"
+                    dataKey="count"
+                    stroke="hsl(262, 83%, 58%)"
+                    fill="hsl(262, 83%, 58%)"
+                    fillOpacity={0.15}
+                    strokeWidth={2}
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Activity Trend */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="font-['Space_Grotesk'] text-lg">Platform Activity</CardTitle>
+            <CardDescription>Sessions & questions over 14 days</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="h-[250px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={activityTrend}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(220, 13%, 91%)" />
+                  <XAxis dataKey="date" tick={{ fontSize: 11 }} />
+                  <YAxis allowDecimals={false} tick={{ fontSize: 11 }} />
+                  <Tooltip />
+                  <Line type="monotone" dataKey="sessions" stroke="hsl(199, 89%, 48%)" strokeWidth={2} dot={false} />
+                  <Line type="monotone" dataKey="questions" stroke="hsl(340, 82%, 52%)" strokeWidth={2} dot={false} />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
       {/* Quick Actions + Activity Feed */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Quick Actions */}
