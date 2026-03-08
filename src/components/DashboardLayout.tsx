@@ -59,6 +59,7 @@ const adminNav = [
   { title: "Assignments", url: "/dashboard/assignments", icon: ClipboardList },
   { title: "Resources", url: "/dashboard/resources", icon: BookOpen },
   { title: "Sessions", url: "/dashboard/sessions", icon: Calendar },
+  { title: "Chat Monitor", url: "/dashboard/chat", icon: MessageCircle },
 ];
 
 function AppSidebar() {
