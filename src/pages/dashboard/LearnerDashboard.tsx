@@ -92,8 +92,8 @@ const LearnerDashboard = () => {
                     <p className="text-sm text-muted-foreground font-medium">{stat.label}</p>
                     <p className="text-3xl font-bold mt-1 font-['Space_Grotesk']">{stat.value}</p>
                   </div>
-                  <div className="text-3xl animate-float" style={{ animationDelay: `${i * 0.3}s` }}>
-                    {stat.emoji}
+                  <div className={`h-10 w-10 rounded-xl ${stat.gradient} flex items-center justify-center shadow-sm`}>
+                    <stat.icon className="h-5 w-5 text-white" />
                   </div>
                 </div>
               </CardContent>
