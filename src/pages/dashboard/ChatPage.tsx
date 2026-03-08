@@ -8,7 +8,7 @@ import DashboardLayout from "@/components/DashboardLayout";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Send, MessageCircle } from "lucide-react";
+import { Send, MessageCircle, Search, X } from "lucide-react";
 import { format } from "date-fns";
 
 interface Contact {
@@ -33,6 +33,9 @@ const ChatPage = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [loading, setLoading] = useState(true);
+  const [contactSearch, setContactSearch] = useState("");
+  const [messageSearch, setMessageSearch] = useState("");
+  const [showMessageSearch, setShowMessageSearch] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const fetchContacts = async () => {
@@ -204,10 +207,23 @@ const ChatPage = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 h-[calc(100vh-220px)]">
           {/* Contact list */}
-          <Card className="border-border/50 md:col-span-1">
-            <CardContent className="p-2">
+          <Card className="border-border/50 md:col-span-1 flex flex-col">
+            <div className="p-2 pb-0">
+              <div className="relative">
+                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input
+                  value={contactSearch}
+                  onChange={(e) => setContactSearch(e.target.value)}
+                  placeholder="Search contacts..."
+                  className="pl-9 h-9 text-sm"
+                />
+              </div>
+            </div>
+            <CardContent className="p-2 flex-1 overflow-auto">
               <div className="space-y-1">
-                {contacts.map((c) => (
+                {contacts
+                  .filter((c) => c.name.toLowerCase().includes(contactSearch.toLowerCase()))
+                  .map((c) => (
                   <button
                     key={c.id}
                     onClick={() => setSelectedContact(c)}
@@ -246,12 +262,45 @@ const ChatPage = () => {
                       {getInitials(selectedContact.name)}
                     </AvatarFallback>
                   </Avatar>
-                  <p className="font-medium text-sm">{selectedContact.name}</p>
+                  <p className="font-medium text-sm flex-1">{selectedContact.name}</p>
+                  {showMessageSearch ? (
+                    <div className="flex items-center gap-1">
+                      <Input
+                        value={messageSearch}
+                        onChange={(e) => setMessageSearch(e.target.value)}
+                        placeholder="Search messages..."
+                        className="h-8 w-48 text-sm"
+                        autoFocus
+                      />
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={() => { setShowMessageSearch(false); setMessageSearch(""); }}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ) : (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8"
+                      onClick={() => setShowMessageSearch(true)}
+                    >
+                      <Search className="h-4 w-4" />
+                    </Button>
+                  )}
                 </div>
                 <ScrollArea className="flex-1 p-4">
                   <div className="space-y-3">
-                    {messages.map((m) => {
+                    {messages
+                      .filter((m) =>
+                        !messageSearch || m.body.toLowerCase().includes(messageSearch.toLowerCase())
+                      )
+                      .map((m) => {
                       const isMine = m.sender_id === user?.id;
+                      const highlighted = messageSearch && m.body.toLowerCase().includes(messageSearch.toLowerCase());
                       return (
                         <div key={m.id} className={`flex ${isMine ? "justify-end" : "justify-start"}`}>
                           <div
@@ -259,7 +308,7 @@ const ChatPage = () => {
                               isMine
                                 ? "bg-primary text-primary-foreground rounded-br-md"
                                 : "bg-muted rounded-bl-md"
-                            }`}
+                            } ${highlighted ? "ring-2 ring-[hsl(var(--warning))]" : ""}`}
                           >
                             <p>{m.body}</p>
                             <p className={`text-[10px] mt-1 ${isMine ? "text-primary-foreground/60" : "text-muted-foreground"}`}>
