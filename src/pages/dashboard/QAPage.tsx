@@ -14,6 +14,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { MessageSquare, Plus, Send, CheckCircle2 } from "lucide-react";
 import { format } from "date-fns";
+import { logMockEmail } from "@/lib/emailLogger";
 
 interface Answer {
   id: string;
