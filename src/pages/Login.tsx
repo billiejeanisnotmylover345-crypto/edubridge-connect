@@ -30,16 +30,21 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background px-4">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-background px-4 relative overflow-hidden">
+      {/* Background blobs */}
+      <div className="absolute top-20 left-20 w-64 h-64 bg-primary/15 rounded-full filter blur-3xl animate-blob" />
+      <div className="absolute bottom-20 right-20 w-64 h-64 bg-accent/15 rounded-full filter blur-3xl animate-blob animation-delay-2000" />
+      <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-secondary/10 rounded-full filter blur-3xl animate-blob animation-delay-4000" />
+
+      <Card className="w-full max-w-md relative z-10 border-border/50 shadow-xl shadow-primary/5">
         <CardHeader className="text-center">
           <Link to="/" className="inline-flex items-center justify-center gap-2 mb-4">
-            <div className="h-10 w-10 rounded-lg bg-primary flex items-center justify-center">
-              <GraduationCap className="h-6 w-6 text-primary-foreground" />
+            <div className="h-12 w-12 rounded-2xl gradient-fun flex items-center justify-center shadow-lg shadow-primary/25">
+              <GraduationCap className="h-6 w-6 text-white" />
             </div>
           </Link>
-          <CardTitle className="text-2xl font-['Space_Grotesk']">Welcome back</CardTitle>
-          <CardDescription>Sign in to your EduBridge account</CardDescription>
+          <CardTitle className="text-2xl font-['Space_Grotesk']">Welcome back! 👋</CardTitle>
+          <CardDescription>Sign in to continue your journey</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -52,6 +57,7 @@ const Login = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                className="rounded-xl"
               />
             </div>
             <div className="space-y-2">
@@ -62,16 +68,17 @@ const Login = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                className="rounded-xl"
               />
             </div>
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? "Signing in..." : "Sign In"}
+            <Button type="submit" className="w-full rounded-xl gradient-fun border-0 shadow-md shadow-primary/20 hover:shadow-primary/40 transition-shadow" disabled={isLoading}>
+              {isLoading ? "Signing in..." : "Let's Go! 🚀"}
             </Button>
           </form>
           <p className="text-sm text-center text-muted-foreground mt-6">
             Don't have an account?{" "}
-            <Link to="/register" className="text-primary font-medium hover:underline">
-              Sign up
+            <Link to="/register" className="text-primary font-semibold hover:underline">
+              Sign up ✨
             </Link>
           </p>
         </CardContent>
