@@ -97,18 +97,11 @@ const Landing = () => {
             <span className="gradient-text">
               Better Learning
             </span>
-            <motion.span
-              animate={{ rotate: [0, 14, -8, 14, -4, 10, 0] }}
-              transition={{ duration: 2.5, repeat: Infinity, repeatDelay: 3 }}
-              className="inline-block ml-3"
-            >
-              🎉
-            </motion.span>
           </h1>
 
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">
             Connect with awesome mentors, crush your goals, and level up your skills.
-            Learning has never been this <span className="font-semibold text-primary">fun</span>! ⚡
+            Learning has never been this <span className="font-semibold text-primary">fun</span>!
           </p>
 
           <div className="flex items-center justify-center gap-4 flex-wrap">
@@ -118,33 +111,8 @@ const Landing = () => {
               </Link>
             </Button>
             <Button size="lg" variant="outline" asChild className="text-base px-8 rounded-full border-2 hover:scale-105 transition-all">
-              <Link to="/login">I have an account 👋</Link>
+              <Link to="/login">I have an account</Link>
             </Button>
-          </div>
-
-          {/* Fun floating elements */}
-          <div className="hidden md:block">
-            <motion.div
-              animate={{ y: [-8, 8, -8] }}
-              transition={{ duration: 4, repeat: Infinity }}
-              className="absolute top-10 right-10 text-4xl"
-            >
-              ⭐
-            </motion.div>
-            <motion.div
-              animate={{ y: [6, -6, 6] }}
-              transition={{ duration: 3.5, repeat: Infinity }}
-              className="absolute bottom-20 left-10 text-3xl"
-            >
-              💡
-            </motion.div>
-            <motion.div
-              animate={{ y: [-5, 10, -5], rotate: [0, 10, 0] }}
-              transition={{ duration: 5, repeat: Infinity }}
-              className="absolute top-40 left-0 text-2xl"
-            >
-              🎨
-            </motion.div>
           </div>
         </motion.div>
       </section>
