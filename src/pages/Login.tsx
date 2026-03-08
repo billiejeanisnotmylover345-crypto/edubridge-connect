@@ -43,7 +43,7 @@ const Login = () => {
               <GraduationCap className="h-6 w-6 text-white" />
             </div>
           </Link>
-          <CardTitle className="text-2xl font-['Space_Grotesk']">Welcome back! 👋</CardTitle>
+          <CardTitle className="text-2xl font-['Space_Grotesk']">Welcome back!</CardTitle>
           <CardDescription>Sign in to continue your journey</CardDescription>
         </CardHeader>
         <CardContent>
