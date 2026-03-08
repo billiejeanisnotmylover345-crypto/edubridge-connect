@@ -167,7 +167,7 @@ const Landing = () => {
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjEpIi8+PC9zdmc+')] opacity-50" />
           <div className="relative z-10">
             <h2 className="text-3xl md:text-4xl font-bold font-['Space_Grotesk'] text-white mb-4">
-              Ready to start your journey? 🚀
+              Ready to start your journey?
             </h2>
             <p className="text-white/80 text-lg mb-8 max-w-md mx-auto">
               Join thousands of learners already crushing their goals on EduBridge.
