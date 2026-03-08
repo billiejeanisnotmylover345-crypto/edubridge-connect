@@ -28,7 +28,29 @@ const App = () => {
     typeof window !== "undefined" &&
     (window.location.hostname.endsWith("github.io") || import.meta.env.BASE_URL === "./");
 
-  const Router = shouldUseHashRouter ? HashRouter : BrowserRouter;
+  const appRoutes = (
+    <AuthProvider>
+      <Routes>
+        <Route path="/" element={<Landing />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/complete-profile" element={<CompleteProfile />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/dashboard/profile" element={<ProfilePage editMode />} />
+        <Route path="/dashboard/mentor" element={<MentorViewPage />} />
+        <Route path="/dashboard/students" element={<StudentsPage />} />
+        <Route path="/dashboard/users" element={<AdminUsersPage />} />
+        <Route path="/dashboard/assignments" element={<AdminAssignmentsPage />} />
+        <Route path="/dashboard/resources" element={<ResourcesPage />} />
+        <Route path="/dashboard/sessions" element={<SessionsPage />} />
+        <Route path="/dashboard/qa" element={<QAPage />} />
+        <Route path="/dashboard/progress" element={<ProgressPage />} />
+        <Route path="/dashboard/chat" element={<ChatPage />} />
+        {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </AuthProvider>
+  );
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -36,29 +58,10 @@ const App = () => {
         <Toaster />
         <Sonner />
         {shouldUseHashRouter ? (
-          <HashRouter> 
-            <AuthProvider>
-            <Routes>
-              <Route path="/" element={<Landing />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/complete-profile" element={<CompleteProfile />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/dashboard/profile" element={<ProfilePage editMode />} />
-              <Route path="/dashboard/mentor" element={<MentorViewPage />} />
-              <Route path="/dashboard/students" element={<StudentsPage />} />
-              <Route path="/dashboard/users" element={<AdminUsersPage />} />
-              <Route path="/dashboard/assignments" element={<AdminAssignmentsPage />} />
-              <Route path="/dashboard/resources" element={<ResourcesPage />} />
-              <Route path="/dashboard/sessions" element={<SessionsPage />} />
-              <Route path="/dashboard/qa" element={<QAPage />} />
-              <Route path="/dashboard/progress" element={<ProgressPage />} />
-              <Route path="/dashboard/chat" element={<ChatPage />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </AuthProvider>
-        </Router>
+          <HashRouter>{appRoutes}</HashRouter>
+        ) : (
+          <BrowserRouter basename={import.meta.env.BASE_URL}>{appRoutes}</BrowserRouter>
+        )}
       </TooltipProvider>
     </QueryClientProvider>
   );
