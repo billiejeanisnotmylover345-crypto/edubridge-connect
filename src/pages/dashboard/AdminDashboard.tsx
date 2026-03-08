@@ -12,7 +12,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
-  ResponsiveContainer, PieChart, Pie, Cell
+  ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line, AreaChart, Area
 } from "recharts";
 
 interface UserRow {
