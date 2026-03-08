@@ -45,11 +45,17 @@ const LearnerDashboard = () => {
     fetchData();
   }, [user]);
 
+  const progressLabel = milestoneProgress.total > 0
+    ? `${milestoneProgress.completed}/${milestoneProgress.total}`
+    : "0";
+
   const stats = [
     { label: "My Mentors", value: mentorCount > 0 ? mentorCount.toString() : (isOnWaitingList ? "Waiting..." : "None"), icon: UserCircle, color: "hsl(262, 83%, 58%)" },
+    { label: "Progress", value: progressLabel, icon: Target, color: "hsl(152, 69%, 40%)" },
     { label: "Resources", value: resourceCount.toString(), icon: BookOpen, color: "hsl(199, 89%, 48%)" },
     { label: "Sessions", value: sessionCount.toString(), icon: Calendar, color: "hsl(340, 82%, 52%)" },
-    { label: "Questions", value: questionCount.toString(), icon: MessageSquare, color: "hsl(152, 69%, 40%)" },
+    { label: "Questions", value: questionCount.toString(), icon: MessageSquare, color: "hsl(38, 92%, 50%)" },
+    { label: "Unread Messages", value: unreadMessages.toString(), icon: MessageCircle, color: "hsl(262, 83%, 58%)" },
   ];
 
   return (
