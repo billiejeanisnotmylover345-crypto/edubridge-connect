@@ -17,6 +17,8 @@ import MentorViewPage from "./pages/dashboard/MentorViewPage";
 import StudentsPage from "./pages/dashboard/StudentsPage";
 import AdminUsersPage from "./pages/dashboard/AdminUsersPage";
 import AdminAssignmentsPage from "./pages/dashboard/AdminAssignmentsPage";
+import ProgressPage from "./pages/dashboard/ProgressPage";
+import ChatPage from "./pages/dashboard/ChatPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
