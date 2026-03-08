@@ -174,65 +174,6 @@ const ResourcesPage = () => {
     }
   };
 
-  const getYouTubeEmbedUrl = (url: string) => {
-    const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/))([^?&]+)/);
-    return match ? `https://www.youtube.com/embed/${match[1]}` : null;
-  };
-
-  const renderPreview = (r: Resource) => {
-    const url = r.file_url || r.video_url || "";
-
-    if (r.resource_type === "video" && r.video_url) {
-      const embedUrl = getYouTubeEmbedUrl(r.video_url);
-      if (embedUrl) {
-        return (
-          <iframe
-            src={embedUrl}
-            className="w-full aspect-video rounded-lg"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-          />
-        );
-      }
-      return (
-        <video src={r.video_url} controls className="w-full rounded-lg max-h-[60vh]">
-          Your browser does not support the video tag.
-        </video>
-      );
-    }
-
-    if (r.resource_type === "link" && r.video_url) {
-      return (
-        <div className="flex flex-col items-center justify-center py-12 gap-4">
-          <Link2 className="h-12 w-12 text-muted-foreground" />
-          <p className="text-muted-foreground">External link — opens in a new tab</p>
-          <a href={r.video_url} target="_blank" rel="noopener noreferrer">
-            <Button>Open Link <Link2 className="h-4 w-4 ml-2" /></Button>
-          </a>
-        </div>
-      );
-    }
-
-    // Document/file preview
-    if (r.file_url) {
-      const lower = r.file_url.toLowerCase();
-      const isImage = /\.(jpg|jpeg|png|gif|webp|svg)(\?|$)/i.test(lower);
-      if (isImage) {
-        return <img src={r.file_url} alt={r.title} className="max-w-full max-h-[70vh] rounded-lg mx-auto" />;
-      }
-      // PDF, HTML, HTM and other browser-renderable files — use iframe
-      return (
-        <iframe
-          src={r.file_url}
-          className="w-full h-[70vh] rounded-lg border border-border"
-          title={r.title}
-          sandbox="allow-same-origin allow-scripts"
-        />
-      );
-    }
-
-    return <p className="text-muted-foreground text-center py-8">No content available to preview.</p>;
-  };
 
   return (
     <DashboardLayout>
