@@ -423,6 +423,19 @@ const SessionsPage = () => {
           })}
         </div>
       )}
+
+      {ratingSession && user && (
+        <SessionRatingDialog
+          open={!!ratingSession}
+          onOpenChange={(open) => !open && setRatingSession(null)}
+          sessionId={ratingSession.id}
+          learnerId={user.id}
+          sessionTitle={ratingSession.title}
+          onRated={() => {
+            fetchRatedSessions();
+          }}
+        />
+      )}
     </DashboardLayout>
   );
 };
