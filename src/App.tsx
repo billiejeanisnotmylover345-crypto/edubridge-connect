@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, HashRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
@@ -23,36 +23,41 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter basename={import.meta.env.BASE_URL}>
-        <AuthProvider>
-          <Routes>
-            <Route path="/" element={<Landing />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/complete-profile" element={<CompleteProfile />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/dashboard/profile" element={<ProfilePage editMode />} />
-            <Route path="/dashboard/mentor" element={<MentorViewPage />} />
-            <Route path="/dashboard/students" element={<StudentsPage />} />
-            <Route path="/dashboard/users" element={<AdminUsersPage />} />
-            <Route path="/dashboard/assignments" element={<AdminAssignmentsPage />} />
-            <Route path="/dashboard/resources" element={<ResourcesPage />} />
-            <Route path="/dashboard/sessions" element={<SessionsPage />} />
-            <Route path="/dashboard/qa" element={<QAPage />} />
-            <Route path="/dashboard/progress" element={<ProgressPage />} />
-            <Route path="/dashboard/chat" element={<ChatPage />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </AuthProvider>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+const App = () => {
+  const isGitHubPages = typeof window !== "undefined" && window.location.hostname.endsWith("github.io");
+  const Router = isGitHubPages ? HashRouter : BrowserRouter;
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <Router basename={import.meta.env.BASE_URL}>
+          <AuthProvider>
+            <Routes>
+              <Route path="/" element={<Landing />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/complete-profile" element={<CompleteProfile />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/dashboard/profile" element={<ProfilePage editMode />} />
+              <Route path="/dashboard/mentor" element={<MentorViewPage />} />
+              <Route path="/dashboard/students" element={<StudentsPage />} />
+              <Route path="/dashboard/users" element={<AdminUsersPage />} />
+              <Route path="/dashboard/assignments" element={<AdminAssignmentsPage />} />
+              <Route path="/dashboard/resources" element={<ResourcesPage />} />
+              <Route path="/dashboard/sessions" element={<SessionsPage />} />
+              <Route path="/dashboard/qa" element={<QAPage />} />
+              <Route path="/dashboard/progress" element={<ProgressPage />} />
+              <Route path="/dashboard/chat" element={<ChatPage />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </AuthProvider>
+        </Router>
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;
