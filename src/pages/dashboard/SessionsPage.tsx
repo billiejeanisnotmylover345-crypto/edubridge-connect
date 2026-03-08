@@ -404,6 +404,18 @@ const SessionsPage = () => {
                         </Button>
                       </div>
                     )}
+                    {role === "learner" && s.status === "completed" && !ratedSessionIds.has(s.id) && (
+                      <div className="ml-4" onClick={(e) => e.stopPropagation()}>
+                        <Button size="sm" variant="outline" onClick={() => setRatingSession(s)}>
+                          <Star className="h-3.5 w-3.5 mr-1" /> Rate
+                        </Button>
+                      </div>
+                    )}
+                    {ratedSessionIds.has(s.id) && (
+                      <div className="ml-4 flex items-center gap-1 text-xs text-[hsl(var(--warning))]">
+                        <Star className="h-3.5 w-3.5 fill-current" /> Rated
+                      </div>
+                    )}
                   </div>
                 </CardContent>
               </Card>
