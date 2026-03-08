@@ -11,7 +11,7 @@ import DashboardLayout from "@/components/DashboardLayout";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { BookOpen, Plus, FileText, Video, Link2, Download, Trash2, Pencil } from "lucide-react";
+import { BookOpen, Plus, FileText, Video, Link2, Download, Trash2, Pencil, Eye, X } from "lucide-react";
 import { format } from "date-fns";
 
 interface Resource {
