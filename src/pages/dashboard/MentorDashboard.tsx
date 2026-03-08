@@ -3,6 +3,16 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Users, Calendar, MessageSquare, BookOpen } from "lucide-react";
+import { motion } from "framer-motion";
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { delay: i * 0.08, duration: 0.4, ease: "easeOut" },
+  }),
+};
 
 const MentorDashboard = () => {
   const { user, profile } = useAuth();
@@ -29,36 +39,43 @@ const MentorDashboard = () => {
   }, [user]);
 
   const stats = [
-    { label: "Active Students", value: studentCount.toString(), icon: Users, color: "hsl(262, 83%, 58%)" },
-    { label: "Resources", value: resourceCount.toString(), icon: BookOpen, color: "hsl(199, 89%, 48%)" },
-    { label: "Sessions", value: sessionCount.toString(), icon: Calendar, color: "hsl(340, 82%, 52%)" },
-    { label: "Open Questions", value: questionCount.toString(), icon: MessageSquare, color: "hsl(152, 69%, 40%)" },
+    { label: "Active Students", value: studentCount.toString(), icon: Users, emoji: "👨‍🎓", gradient: "gradient-cool" },
+    { label: "Resources", value: resourceCount.toString(), icon: BookOpen, emoji: "📚", gradient: "gradient-warm" },
+    { label: "Sessions", value: sessionCount.toString(), icon: Calendar, emoji: "📅", gradient: "gradient-fun" },
+    { label: "Open Questions", value: questionCount.toString(), icon: MessageSquare, emoji: "❓", gradient: "gradient-fresh" },
   ];
 
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-3xl font-bold font-['Space_Grotesk']">
-          Welcome back, {profile?.full_name || "Mentor"} 👋
-        </h1>
-        <p className="text-muted-foreground mt-1">Here's your mentorship overview.</p>
+        <motion.h1
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="text-3xl font-bold font-['Space_Grotesk']"
+        >
+          Welcome back, {profile?.full_name || "Mentor"}! 🌟
+        </motion.h1>
+        <p className="text-muted-foreground mt-1">Here's your mentorship overview ✨</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {stats.map((stat) => (
-          <Card key={stat.label} className="border-border/50">
-            <CardContent className="pt-6">
-              <div className="flex items-start justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground">{stat.label}</p>
-                  <p className="text-2xl font-bold mt-1 font-['Space_Grotesk']">{stat.value}</p>
+        {stats.map((stat, i) => (
+          <motion.div key={stat.label} custom={i} initial="hidden" animate="visible" variants={cardVariants}>
+            <Card className="border-border/50 fun-card group relative overflow-hidden">
+              <div className={`absolute inset-0 ${stat.gradient} opacity-0 group-hover:opacity-[0.06] transition-opacity duration-300`} />
+              <CardContent className="pt-6 relative z-10">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <p className="text-sm text-muted-foreground font-medium">{stat.label}</p>
+                    <p className="text-3xl font-bold mt-1 font-['Space_Grotesk']">{stat.value}</p>
+                  </div>
+                  <div className="text-3xl animate-float" style={{ animationDelay: `${i * 0.3}s` }}>
+                    {stat.emoji}
+                  </div>
                 </div>
-                <div className="h-10 w-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: `${stat.color}15` }}>
-                  <stat.icon className="h-5 w-5" style={{ color: stat.color }} />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </motion.div>
         ))}
       </div>
     </div>
