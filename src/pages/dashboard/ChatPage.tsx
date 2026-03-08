@@ -207,10 +207,23 @@ const ChatPage = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 h-[calc(100vh-220px)]">
           {/* Contact list */}
-          <Card className="border-border/50 md:col-span-1">
-            <CardContent className="p-2">
+          <Card className="border-border/50 md:col-span-1 flex flex-col">
+            <div className="p-2 pb-0">
+              <div className="relative">
+                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input
+                  value={contactSearch}
+                  onChange={(e) => setContactSearch(e.target.value)}
+                  placeholder="Search contacts..."
+                  className="pl-9 h-9 text-sm"
+                />
+              </div>
+            </div>
+            <CardContent className="p-2 flex-1 overflow-auto">
               <div className="space-y-1">
-                {contacts.map((c) => (
+                {contacts
+                  .filter((c) => c.name.toLowerCase().includes(contactSearch.toLowerCase()))
+                  .map((c) => (
                   <button
                     key={c.id}
                     onClick={() => setSelectedContact(c)}
