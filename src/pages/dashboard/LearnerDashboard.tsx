@@ -84,7 +84,7 @@ const LearnerDashboard = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {stats.map((stat, i) => (
           <motion.div key={stat.label} custom={i} initial="hidden" animate="visible" variants={cardVariants}>
-            <Card className="border-border/50 fun-card group relative overflow-hidden">
+            <Card className="border-border/50 fun-card group relative overflow-hidden glass-card shadow-md">
               <div className={`absolute inset-0 ${stat.gradient} opacity-0 group-hover:opacity-[0.06] transition-opacity duration-300`} />
               <CardContent className="pt-6 relative z-10">
                 <div className="flex items-start justify-between">
