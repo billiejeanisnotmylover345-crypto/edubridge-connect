@@ -12,6 +12,8 @@ const LearnerDashboard = () => {
   const [resourceCount, setResourceCount] = useState(0);
   const [sessionCount, setSessionCount] = useState(0);
   const [questionCount, setQuestionCount] = useState(0);
+  const [milestoneProgress, setMilestoneProgress] = useState({ total: 0, completed: 0 });
+  const [unreadMessages, setUnreadMessages] = useState(0);
 
   useEffect(() => {
     if (!user) return;
