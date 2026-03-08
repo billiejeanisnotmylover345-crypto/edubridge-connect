@@ -107,11 +107,8 @@ const LearnerDashboard = () => {
           <Card className="mt-6 border-warning/30 bg-warning/5">
             <CardContent className="pt-6">
               <div className="flex items-center gap-3">
-                <span className="text-2xl">⏳</span>
-                <div>
-                  <Badge variant="outline" className="border-warning text-warning mb-1">Waiting List</Badge>
-                  <p className="text-sm">Hang tight! A mentor will be assigned to you soon! 🎯</p>
-                </div>
+                <Badge variant="outline" className="border-warning text-warning">Waiting List</Badge>
+                <p className="text-sm">Hang tight! A mentor will be assigned to you soon.</p>
               </div>
             </CardContent>
           </Card>

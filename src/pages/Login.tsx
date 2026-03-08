@@ -78,7 +78,7 @@ const Login = () => {
           <p className="text-sm text-center text-muted-foreground mt-6">
             Don't have an account?{" "}
             <Link to="/register" className="text-primary font-semibold hover:underline">
-              Sign up ✨
+              Sign up
             </Link>
           </p>
         </CardContent>
