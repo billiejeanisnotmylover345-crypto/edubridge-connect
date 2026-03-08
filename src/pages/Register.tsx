@@ -49,7 +49,7 @@ const Register = () => {
               <GraduationCap className="h-6 w-6 text-white" />
             </div>
           </Link>
-          <CardTitle className="text-2xl font-['Space_Grotesk']">Join EduBridge! 🎉</CardTitle>
+          <CardTitle className="text-2xl font-['Space_Grotesk']">Join EduBridge!</CardTitle>
           <CardDescription>Create your account and start your adventure</CardDescription>
         </CardHeader>
         <CardContent>
