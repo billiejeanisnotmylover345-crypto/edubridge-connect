@@ -245,6 +245,7 @@ const ResourcesPage = () => {
     return <p className="text-muted-foreground text-center py-8">No content available to preview.</p>;
   };
 
+  return (
     <DashboardLayout>
       <div className="mb-8 flex items-center justify-between">
         <div>
