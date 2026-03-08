@@ -33,6 +33,9 @@ const ChatPage = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [loading, setLoading] = useState(true);
+  const [contactSearch, setContactSearch] = useState("");
+  const [messageSearch, setMessageSearch] = useState("");
+  const [showMessageSearch, setShowMessageSearch] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const fetchContacts = async () => {
