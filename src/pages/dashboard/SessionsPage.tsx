@@ -13,7 +13,8 @@ import SessionCalendar from "@/components/SessionCalendar";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Calendar, Plus, Clock, User, Link as LinkIcon, ExternalLink, Pencil, List, CalendarDays } from "lucide-react";
+import { Calendar, Plus, Clock, User, Link as LinkIcon, ExternalLink, Pencil, List, CalendarDays, Star } from "lucide-react";
+import SessionRatingDialog from "@/components/SessionRatingDialog";
 import { format } from "date-fns";
 import { logMockEmail } from "@/lib/emailLogger";
 
