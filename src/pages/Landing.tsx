@@ -8,30 +8,26 @@ const features = [
   {
     icon: Users,
     title: "Smart Mentor Matching",
-    description: "Get paired with the perfect mentor automatically. No waiting around! 🎯",
+    description: "Get paired with the perfect mentor automatically. No waiting around!",
     gradient: "gradient-cool",
-    emoji: "🤝",
   },
   {
     icon: BookOpen,
     title: "Learning Resources",
-    description: "Videos, docs, and guides from your mentors — all in one place! 📚",
+    description: "Videos, docs, and guides from your mentors — all in one place!",
     gradient: "gradient-warm",
-    emoji: "📖",
   },
   {
     icon: GraduationCap,
     title: "Live Sessions",
-    description: "Jump into scheduled sessions with your mentor. Easy peasy! 🎓",
+    description: "Jump into scheduled sessions with your mentor. Easy peasy!",
     gradient: "gradient-fresh",
-    emoji: "🎥",
   },
   {
     icon: BarChart3,
     title: "Track Progress",
-    description: "See how far you've come with milestones and progress bars! 📊",
+    description: "See how far you've come with milestones and progress bars!",
     gradient: "gradient-fun",
-    emoji: "🚀",
   },
 ];
 
