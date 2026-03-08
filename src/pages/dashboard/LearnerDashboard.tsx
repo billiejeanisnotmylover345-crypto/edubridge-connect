@@ -18,12 +18,14 @@ const LearnerDashboard = () => {
   useEffect(() => {
     if (!user) return;
     const fetchData = async () => {
-      const [assignRes, waitRes, resCount, sessCount, qCount] = await Promise.all([
+      const [assignRes, waitRes, resCount, sessCount, qCount, milestonesRes, unreadRes] = await Promise.all([
         supabase.from("mentor_assignments").select("mentor_id", { count: "exact", head: true }).eq("learner_id", user.id).eq("status", "active"),
         supabase.from("waiting_list").select("id").eq("learner_id", user.id).maybeSingle(),
         supabase.from("resources").select("*", { count: "exact", head: true }),
         supabase.from("sessions").select("*", { count: "exact", head: true }).eq("learner_id", user.id),
         supabase.from("questions").select("*", { count: "exact", head: true }).eq("asked_by", user.id),
+        supabase.from("milestones").select("id, completed").eq("learner_id", user.id),
+        supabase.from("messages").select("*", { count: "exact", head: true }).eq("receiver_id", user.id).eq("read", false),
       ]);
 
       setMentorCount(assignRes.count || 0);
