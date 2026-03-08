@@ -60,12 +60,12 @@ const LearnerDashboard = () => {
     : "0";
 
   const stats = [
-    { label: "My Mentors", value: mentorCount > 0 ? mentorCount.toString() : (isOnWaitingList ? "Waiting..." : "None"), icon: UserCircle, emoji: "🧑‍🏫", gradient: "gradient-cool" },
-    { label: "Progress", value: progressLabel, icon: Target, emoji: "🎯", gradient: "gradient-fresh" },
-    { label: "Resources", value: resourceCount.toString(), icon: BookOpen, emoji: "📚", gradient: "gradient-warm" },
-    { label: "Sessions", value: sessionCount.toString(), icon: Calendar, emoji: "📅", gradient: "gradient-fun" },
-    { label: "Questions", value: questionCount.toString(), icon: MessageSquare, emoji: "❓", gradient: "gradient-cool" },
-    { label: "Messages", value: unreadMessages.toString(), icon: MessageCircle, emoji: "💬", gradient: "gradient-warm" },
+    { label: "My Mentors", value: mentorCount > 0 ? mentorCount.toString() : (isOnWaitingList ? "Waiting..." : "None"), icon: UserCircle, gradient: "gradient-cool" },
+    { label: "Progress", value: progressLabel, icon: Target, gradient: "gradient-fresh" },
+    { label: "Resources", value: resourceCount.toString(), icon: BookOpen, gradient: "gradient-warm" },
+    { label: "Sessions", value: sessionCount.toString(), icon: Calendar, gradient: "gradient-fun" },
+    { label: "Questions", value: questionCount.toString(), icon: MessageSquare, gradient: "gradient-cool" },
+    { label: "Messages", value: unreadMessages.toString(), icon: MessageCircle, gradient: "gradient-warm" },
   ];
 
   return (
