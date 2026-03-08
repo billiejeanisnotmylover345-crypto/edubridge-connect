@@ -175,7 +175,9 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
               <NotificationBell />
             </div>
           </header>
-          <main className="flex-1 p-6">{children}</main>
+          <main className="flex-1 p-6 page-bg">
+            <div className="relative z-10">{children}</div>
+          </main>
         </div>
       </div>
     </SidebarProvider>

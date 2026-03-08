@@ -42,7 +42,7 @@ const Register = () => {
       <div className="absolute bottom-10 left-10 w-64 h-64 bg-primary/15 rounded-full filter blur-3xl animate-blob animation-delay-2000" />
       <div className="absolute top-1/3 left-1/4 w-64 h-64 bg-success/10 rounded-full filter blur-3xl animate-blob animation-delay-4000" />
 
-      <Card className="w-full max-w-md relative z-10 border-border/50 shadow-xl shadow-primary/5">
+      <Card className="w-full max-w-md relative z-10 glass-card shadow-xl shadow-primary/10">
         <CardHeader className="text-center">
           <Link to="/" className="inline-flex items-center justify-center gap-2 mb-4">
             <div className="h-12 w-12 rounded-2xl gradient-fun flex items-center justify-center shadow-lg shadow-primary/25">
