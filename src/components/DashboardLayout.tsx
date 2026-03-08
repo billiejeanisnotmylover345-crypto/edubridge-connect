@@ -30,7 +30,6 @@ import {
   Target,
   MessageCircle,
 } from "lucide-react";
-import NotificationBell from "@/components/NotificationBell";
 import ThemeToggle from "@/components/ThemeToggle";
 import { useLocation } from "react-router-dom";
 
@@ -172,7 +171,6 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
             <SidebarTrigger />
             <div className="flex items-center gap-2">
               <ThemeToggle />
-              <NotificationBell />
             </div>
           </header>
           <main className="flex-1 p-6 page-bg">

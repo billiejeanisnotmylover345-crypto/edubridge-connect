@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import NotificationFeed from "@/components/NotificationFeed";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { BookOpen, Calendar, MessageSquare, UserCircle, Target, MessageCircle } from "lucide-react";
@@ -114,6 +115,8 @@ const LearnerDashboard = () => {
           </Card>
         </motion.div>
       )}
+
+      <NotificationFeed />
     </div>
   );
 };
