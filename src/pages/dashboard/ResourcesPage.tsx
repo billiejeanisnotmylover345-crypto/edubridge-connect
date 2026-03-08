@@ -213,32 +213,21 @@ const ResourcesPage = () => {
       );
     }
 
-    // Document/PDF — try iframe preview
+    // Document/file preview
     if (r.file_url) {
-      const isPdf = r.file_url.toLowerCase().includes(".pdf");
-      if (isPdf) {
-        return (
-          <iframe
-            src={r.file_url}
-            className="w-full h-[70vh] rounded-lg border border-border"
-            title={r.title}
-          />
-        );
-      }
-      // For images
-      const isImage = /\.(jpg|jpeg|png|gif|webp|svg)(\?|$)/i.test(r.file_url);
+      const lower = r.file_url.toLowerCase();
+      const isImage = /\.(jpg|jpeg|png|gif|webp|svg)(\?|$)/i.test(lower);
       if (isImage) {
         return <img src={r.file_url} alt={r.title} className="max-w-full max-h-[70vh] rounded-lg mx-auto" />;
       }
-      // Fallback: offer to open in new tab
+      // PDF, HTML, HTM and other browser-renderable files — use iframe
       return (
-        <div className="flex flex-col items-center justify-center py-12 gap-4">
-          <FileText className="h-12 w-12 text-muted-foreground" />
-          <p className="text-muted-foreground">Preview not available for this file type</p>
-          <a href={r.file_url} target="_blank" rel="noopener noreferrer">
-            <Button>Open File <Download className="h-4 w-4 ml-2" /></Button>
-          </a>
-        </div>
+        <iframe
+          src={r.file_url}
+          className="w-full h-[70vh] rounded-lg border border-border"
+          title={r.title}
+          sandbox="allow-same-origin allow-scripts"
+        />
       );
     }
 
