@@ -98,9 +98,8 @@ const AdminDashboard = () => {
         }))
       );
 
-      // Signup trend (last 30 days)
-      const thirtyDaysAgo = new Date();
-      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+      // Signup trend (last 14 days)
+      const profiles = profilesRes.data || [];
       const signupMap: Record<string, number> = {};
       profiles.forEach((p) => {
         const date = new Date(p.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric" });
