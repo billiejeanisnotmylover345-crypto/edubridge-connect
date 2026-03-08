@@ -115,6 +115,8 @@ const LearnerDashboard = () => {
           </Card>
         </motion.div>
       )}
+
+      <NotificationFeed />
     </div>
   );
 };

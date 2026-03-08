@@ -78,6 +78,8 @@ const MentorDashboard = () => {
           </motion.div>
         ))}
       </div>
+
+      <NotificationFeed />
     </div>
   );
 };
