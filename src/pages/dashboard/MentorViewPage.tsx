@@ -8,6 +8,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { UserCircle, CheckCircle, X } from "lucide-react";
 import { toast } from "sonner";
+import { logMockEmail } from "@/lib/emailLogger";
 
 interface MentorProfile {
   user_id: string;
