@@ -99,9 +99,19 @@ const SessionsPage = () => {
     }
   };
 
+  const fetchRatedSessions = async () => {
+    if (!user || role !== "learner") return;
+    const { data } = await supabase
+      .from("session_ratings")
+      .select("session_id")
+      .eq("learner_id", user.id);
+    setRatedSessionIds(new Set(data?.map((d: any) => d.session_id) || []));
+  };
+
   useEffect(() => {
     fetchSessions();
     fetchLearners();
+    fetchRatedSessions();
   }, [user]);
 
   const resetForm = () => {
