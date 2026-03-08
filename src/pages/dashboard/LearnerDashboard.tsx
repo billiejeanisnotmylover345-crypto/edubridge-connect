@@ -67,7 +67,7 @@ const LearnerDashboard = () => {
         <p className="text-muted-foreground mt-1">Here's an overview of your learning journey.</p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {stats.map((stat) => (
           <Card key={stat.label} className="border-border/50">
             <CardContent className="pt-6">
