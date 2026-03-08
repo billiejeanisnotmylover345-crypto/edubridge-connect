@@ -24,16 +24,20 @@ import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
 
 const App = () => {
-  const isGitHubPages = typeof window !== "undefined" && window.location.hostname.endsWith("github.io");
-  const Router = isGitHubPages ? HashRouter : BrowserRouter;
+  const shouldUseHashRouter =
+    typeof window !== "undefined" &&
+    (window.location.hostname.endsWith("github.io") || import.meta.env.BASE_URL === "./");
+
+  const Router = shouldUseHashRouter ? HashRouter : BrowserRouter;
 
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
         <Sonner />
-        <Router basename={import.meta.env.BASE_URL}>
-          <AuthProvider>
+        {shouldUseHashRouter ? (
+          <HashRouter> 
+            <AuthProvider>
             <Routes>
               <Route path="/" element={<Landing />} />
               <Route path="/login" element={<Login />} />
