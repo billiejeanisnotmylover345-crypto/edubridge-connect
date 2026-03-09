@@ -36,6 +36,7 @@ import { useLocation } from "react-router-dom";
 const learnerNav = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "My Mentor", url: "/dashboard/mentor", icon: UserCircle },
+  { title: "Assignments", url: "/dashboard/hw", icon: ClipboardList },
   { title: "Progress", url: "/dashboard/progress", icon: Target },
   { title: "Resources", url: "/dashboard/resources", icon: BookOpen },
   { title: "Sessions", url: "/dashboard/sessions", icon: Calendar },
