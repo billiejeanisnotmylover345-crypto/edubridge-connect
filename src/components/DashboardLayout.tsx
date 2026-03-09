@@ -47,6 +47,7 @@ const learnerNav = [
 const mentorNav = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "My Students", url: "/dashboard/students", icon: Users },
+  { title: "Assignments", url: "/dashboard/hw", icon: ClipboardList },
   { title: "Progress", url: "/dashboard/progress", icon: Target },
   { title: "Resources", url: "/dashboard/resources", icon: BookOpen },
   { title: "Sessions", url: "/dashboard/sessions", icon: Calendar },
