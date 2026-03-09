@@ -17,6 +17,7 @@ import MentorViewPage from "./pages/dashboard/MentorViewPage";
 import StudentsPage from "./pages/dashboard/StudentsPage";
 import AdminUsersPage from "./pages/dashboard/AdminUsersPage";
 import AdminAssignmentsPage from "./pages/dashboard/AdminAssignmentsPage";
+import AssignmentsPage from "./pages/dashboard/AssignmentsPage";
 import ProgressPage from "./pages/dashboard/ProgressPage";
 import ChatPage from "./pages/dashboard/ChatPage";
 import NotFound from "./pages/NotFound";
@@ -41,6 +42,7 @@ const App = () => {
         <Route path="/dashboard/students" element={<StudentsPage />} />
         <Route path="/dashboard/users" element={<AdminUsersPage />} />
         <Route path="/dashboard/assignments" element={<AdminAssignmentsPage />} />
+        <Route path="/dashboard/hw" element={<AssignmentsPage />} />
         <Route path="/dashboard/resources" element={<ResourcesPage />} />
         <Route path="/dashboard/sessions" element={<SessionsPage />} />
         <Route path="/dashboard/qa" element={<QAPage />} />
