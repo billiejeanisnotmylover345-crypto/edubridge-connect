@@ -109,11 +109,7 @@ const AssignmentsPage = () => {
 
     toast.success("Assignment created!");
     setCreateOpen(false);
-    setTitle("");
-    setDescription("");
-    setDeadlineDate("");
-    setDeadlineTime("23:59");
-    setInstructions("");
+    resetForm();
     fetchAssignments();
   };
 
