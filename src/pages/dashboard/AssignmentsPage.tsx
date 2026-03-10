@@ -10,7 +10,7 @@ import DashboardLayout from "@/components/DashboardLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
-import { Plus, Clock, FileText, Send, CheckCircle2, AlertCircle } from "lucide-react";
+import { Plus, Clock, FileText, Send, CheckCircle2, AlertCircle, Pencil } from "lucide-react";
 import { format, isPast, formatDistanceToNow } from "date-fns";
 
 interface Assignment {
@@ -41,11 +41,12 @@ const AssignmentsPage = () => {
   const [submissions, setSubmissions] = useState<Record<string, Submission>>({});
   const [loading, setLoading] = useState(true);
   const [createOpen, setCreateOpen] = useState(false);
+  const [editDialog, setEditDialog] = useState<Assignment | null>(null);
   const [submitDialog, setSubmitDialog] = useState<Assignment | null>(null);
   const [viewDialog, setViewDialog] = useState<Assignment | null>(null);
   const [assignmentSubmissions, setAssignmentSubmissions] = useState<(Submission & { learner_name?: string })[]>([]);
 
-  // Create form
+  // Create/Edit form
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [deadlineDate, setDeadlineDate] = useState("");
@@ -108,16 +109,62 @@ const AssignmentsPage = () => {
 
     toast.success("Assignment created!");
     setCreateOpen(false);
+    resetForm();
+    fetchAssignments();
+  };
+
+  const handleEdit = async () => {
+    if (!editDialog || !title || !deadlineDate || !user) return;
+    const deadlineAt = new Date(`${deadlineDate}T${deadlineTime}`).toISOString();
+
+    const { error } = await supabase
+      .from("assignments")
+      .update({
+        title,
+        description,
+        deadline_at: deadlineAt,
+        submission_instructions: instructions,
+      })
+      .eq("id", editDialog.id);
+
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+
+    toast.success("Assignment updated!");
+    setEditDialog(null);
+    resetForm();
+    fetchAssignments();
+  };
+
+  const openEditDialog = (a: Assignment) => {
+    const d = new Date(a.deadline_at);
+    setTitle(a.title);
+    setDescription(a.description || "");
+    setDeadlineDate(d.toISOString().slice(0, 10));
+    setDeadlineTime(d.toTimeString().slice(0, 5));
+    setInstructions(a.submission_instructions || "");
+    setEditDialog(a);
+  };
+
+  const resetForm = () => {
     setTitle("");
     setDescription("");
     setDeadlineDate("");
     setDeadlineTime("23:59");
     setInstructions("");
-    fetchAssignments();
   };
 
   const handleSubmit = async () => {
     if (!submitDialog || !user || !submitContent.trim()) return;
+
+    // Check deadline before submitting
+    if (isPast(new Date(submitDialog.deadline_at))) {
+      toast.error("The deadline for this assignment has passed. Submissions are no longer accepted.");
+      setSubmitDialog(null);
+      return;
+    }
 
     const { error } = await supabase.from("assignment_submissions").insert({
       assignment_id: submitDialog.id,
@@ -243,6 +290,47 @@ const AssignmentsPage = () => {
             </div>
             <Button className="w-full" onClick={handleCreate} disabled={!title || !deadlineDate}>
               Create Assignment
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Assignment Dialog (Mentor) */}
+      <Dialog open={!!editDialog} onOpenChange={(open) => { if (!open) { setEditDialog(null); resetForm(); } }}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="font-['Space_Grotesk']">Edit Assignment</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label>Title</Label>
+              <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Assignment title" />
+            </div>
+            <div className="space-y-2">
+              <Label>Description</Label>
+              <Textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="What should learners do?" rows={3} />
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-2">
+                <Label>Deadline Date</Label>
+                <Input type="date" value={deadlineDate} onChange={(e) => setDeadlineDate(e.target.value)} />
+              </div>
+              <div className="space-y-2">
+                <Label>Deadline Time</Label>
+                <Input type="time" value={deadlineTime} onChange={(e) => setDeadlineTime(e.target.value)} />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label>Submission Instructions</Label>
+              <Textarea
+                value={instructions}
+                onChange={(e) => setInstructions(e.target.value)}
+                placeholder="How should learners submit?"
+                rows={3}
+              />
+            </div>
+            <Button className="w-full" onClick={handleEdit} disabled={!title || !deadlineDate}>
+              Save Changes
             </Button>
           </div>
         </DialogContent>
@@ -382,9 +470,14 @@ const AssignmentsPage = () => {
 
                   {/* Mentor actions */}
                   {isMentor && (
-                    <Button size="sm" variant="outline" onClick={() => handleViewSubmissions(a)}>
-                      View Submissions
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button size="sm" variant="outline" className="flex-1" onClick={() => handleViewSubmissions(a)}>
+                        View Submissions
+                      </Button>
+                      <Button size="sm" variant="outline" onClick={() => openEditDialog(a)}>
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                    </div>
                   )}
                 </CardContent>
               </Card>
