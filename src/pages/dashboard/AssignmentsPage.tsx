@@ -117,6 +117,49 @@ const AssignmentsPage = () => {
     fetchAssignments();
   };
 
+  const handleEdit = async () => {
+    if (!editDialog || !title || !deadlineDate || !user) return;
+    const deadlineAt = new Date(`${deadlineDate}T${deadlineTime}`).toISOString();
+
+    const { error } = await supabase
+      .from("assignments")
+      .update({
+        title,
+        description,
+        deadline_at: deadlineAt,
+        submission_instructions: instructions,
+      })
+      .eq("id", editDialog.id);
+
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+
+    toast.success("Assignment updated!");
+    setEditDialog(null);
+    resetForm();
+    fetchAssignments();
+  };
+
+  const openEditDialog = (a: Assignment) => {
+    const d = new Date(a.deadline_at);
+    setTitle(a.title);
+    setDescription(a.description || "");
+    setDeadlineDate(d.toISOString().slice(0, 10));
+    setDeadlineTime(d.toTimeString().slice(0, 5));
+    setInstructions(a.submission_instructions || "");
+    setEditDialog(a);
+  };
+
+  const resetForm = () => {
+    setTitle("");
+    setDescription("");
+    setDeadlineDate("");
+    setDeadlineTime("23:59");
+    setInstructions("");
+  };
+
   const handleSubmit = async () => {
     if (!submitDialog || !user || !submitContent.trim()) return;
 
