@@ -41,11 +41,12 @@ const AssignmentsPage = () => {
   const [submissions, setSubmissions] = useState<Record<string, Submission>>({});
   const [loading, setLoading] = useState(true);
   const [createOpen, setCreateOpen] = useState(false);
+  const [editDialog, setEditDialog] = useState<Assignment | null>(null);
   const [submitDialog, setSubmitDialog] = useState<Assignment | null>(null);
   const [viewDialog, setViewDialog] = useState<Assignment | null>(null);
   const [assignmentSubmissions, setAssignmentSubmissions] = useState<(Submission & { learner_name?: string })[]>([]);
 
-  // Create form
+  // Create/Edit form
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [deadlineDate, setDeadlineDate] = useState("");
