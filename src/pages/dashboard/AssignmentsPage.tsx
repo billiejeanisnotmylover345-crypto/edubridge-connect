@@ -469,9 +469,14 @@ const AssignmentsPage = () => {
 
                   {/* Mentor actions */}
                   {isMentor && (
-                    <Button size="sm" variant="outline" onClick={() => handleViewSubmissions(a)}>
-                      View Submissions
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button size="sm" variant="outline" className="flex-1" onClick={() => handleViewSubmissions(a)}>
+                        View Submissions
+                      </Button>
+                      <Button size="sm" variant="outline" onClick={() => openEditDialog(a)}>
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                    </div>
                   )}
                 </CardContent>
               </Card>
