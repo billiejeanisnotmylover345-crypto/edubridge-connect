@@ -10,7 +10,7 @@ import DashboardLayout from "@/components/DashboardLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
-import { Plus, Clock, FileText, Send, CheckCircle2, AlertCircle } from "lucide-react";
+import { Plus, Clock, FileText, Send, CheckCircle2, AlertCircle, Pencil } from "lucide-react";
 import { format, isPast, formatDistanceToNow } from "date-fns";
 
 interface Assignment {
