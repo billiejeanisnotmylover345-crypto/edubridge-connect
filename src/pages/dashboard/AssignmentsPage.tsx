@@ -334,6 +334,7 @@ const AssignmentsPage = () => {
             </Button>
           </div>
         </DialogContent>
+      </Dialog>
 
       {/* Submit Dialog (Learner) */}
       <Dialog open={!!submitDialog} onOpenChange={(open) => !open && setSubmitDialog(null)}>
