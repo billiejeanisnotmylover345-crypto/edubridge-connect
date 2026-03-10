@@ -295,6 +295,46 @@ const AssignmentsPage = () => {
         </DialogContent>
       </Dialog>
 
+      {/* Edit Assignment Dialog (Mentor) */}
+      <Dialog open={!!editDialog} onOpenChange={(open) => { if (!open) { setEditDialog(null); resetForm(); } }}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="font-['Space_Grotesk']">Edit Assignment</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label>Title</Label>
+              <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Assignment title" />
+            </div>
+            <div className="space-y-2">
+              <Label>Description</Label>
+              <Textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="What should learners do?" rows={3} />
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-2">
+                <Label>Deadline Date</Label>
+                <Input type="date" value={deadlineDate} onChange={(e) => setDeadlineDate(e.target.value)} />
+              </div>
+              <div className="space-y-2">
+                <Label>Deadline Time</Label>
+                <Input type="time" value={deadlineTime} onChange={(e) => setDeadlineTime(e.target.value)} />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label>Submission Instructions</Label>
+              <Textarea
+                value={instructions}
+                onChange={(e) => setInstructions(e.target.value)}
+                placeholder="How should learners submit?"
+                rows={3}
+              />
+            </div>
+            <Button className="w-full" onClick={handleEdit} disabled={!title || !deadlineDate}>
+              Save Changes
+            </Button>
+          </div>
+        </DialogContent>
+
       {/* Submit Dialog (Learner) */}
       <Dialog open={!!submitDialog} onOpenChange={(open) => !open && setSubmitDialog(null)}>
         <DialogContent className="max-w-lg">
