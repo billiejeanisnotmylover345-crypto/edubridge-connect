@@ -163,6 +163,13 @@ const AssignmentsPage = () => {
   const handleSubmit = async () => {
     if (!submitDialog || !user || !submitContent.trim()) return;
 
+    // Check deadline before submitting
+    if (isPast(new Date(submitDialog.deadline_at))) {
+      toast.error("The deadline for this assignment has passed. Submissions are no longer accepted.");
+      setSubmitDialog(null);
+      return;
+    }
+
     const { error } = await supabase.from("assignment_submissions").insert({
       assignment_id: submitDialog.id,
       learner_id: user.id,
