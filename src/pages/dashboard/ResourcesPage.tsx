@@ -42,7 +42,7 @@ const ResourcesPage = () => {
 
   const canUpload = role === "mentor" || role === "admin";
 
- const fetchResources = async () => {
+  const fetchResources = async () => {
     const { data } = await supabase
       .from("resources")
       .select("*")
