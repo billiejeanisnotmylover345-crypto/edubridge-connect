@@ -69,30 +69,6 @@ const ResourcesPage = () => {
     fetchResources();
   }, []);
 
-  const { data } = await query;
-
-  if (data) {
-    const uploaderIds = [...new Set(data.map((r) => r.uploaded_by))];
-
-    const { data: profiles } = await supabase
-      .from("profiles")
-      .select("user_id, full_name")
-      .in("user_id", uploaderIds);
-
-    const nameMap: Record<string, string> = {};
-    profiles?.forEach((p) => (nameMap[p.user_id] = p.full_name));
-
-    setResources(
-      data.map((r) => ({
-        ...r,
-        uploader_name: nameMap[r.uploaded_by] || "Unknown",
-      }))
-    );
-  }
-
-  setLoading(false);
-};
-
   const resetForm = () => {
     setTitle("");
     setDescription("");
