@@ -42,32 +42,53 @@ const ResourcesPage = () => {
 
   const canUpload = role === "mentor" || role === "admin";
 
-  const fetchResources = async () => {
-    const { data } = await supabase
-      .from("resources")
-      .select("*")
-      .order("created_at", { ascending: false });
+ const fetchResources = async () => {
+  if (!user) return;
 
-    if (data) {
-      const uploaderIds = [...new Set(data.map((r) => r.uploaded_by))];
-      const { data: profiles } = await supabase
-        .from("profiles")
-        .select("user_id, full_name")
-        .in("user_id", uploaderIds);
+  let mentorIds: string[] = [];
 
-      const nameMap: Record<string, string> = {};
-      profiles?.forEach((p) => (nameMap[p.user_id] = p.full_name));
+  if (role === "learner") {
+    const { data: assignments } = await supabase
+      .from("mentor_assignments")
+      .select("mentor_id")
+      .eq("learner_id", user.id)
+      .eq("status", "active");
 
-      setResources(
-        data.map((r) => ({ ...r, uploader_name: nameMap[r.uploaded_by] || "Unknown" }))
-      );
-    }
-    setLoading(false);
-  };
+    mentorIds = assignments?.map((a) => a.mentor_id) || [];
+  }
 
-  useEffect(() => {
-    fetchResources();
-  }, []);
+  let query = supabase
+    .from("resources")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (role === "learner" && mentorIds.length > 0) {
+    query = query.in("uploaded_by", mentorIds);
+  }
+
+  const { data } = await query;
+
+  if (data) {
+    const uploaderIds = [...new Set(data.map((r) => r.uploaded_by))];
+
+    const { data: profiles } = await supabase
+      .from("profiles")
+      .select("user_id, full_name")
+      .in("user_id", uploaderIds);
+
+    const nameMap: Record<string, string> = {};
+    profiles?.forEach((p) => (nameMap[p.user_id] = p.full_name));
+
+    setResources(
+      data.map((r) => ({
+        ...r,
+        uploader_name: nameMap[r.uploaded_by] || "Unknown",
+      }))
+    );
+  }
+
+  setLoading(false);
+};
 
   const resetForm = () => {
     setTitle("");
