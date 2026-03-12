@@ -43,28 +43,31 @@ const ResourcesPage = () => {
   const canUpload = role === "mentor" || role === "admin";
 
  const fetchResources = async () => {
-  if (!user) return;
+    const { data } = await supabase
+      .from("resources")
+      .select("*")
+      .order("created_at", { ascending: false });
 
-  let mentorIds: string[] = [];
+    if (data) {
+      const uploaderIds = [...new Set(data.map((r) => r.uploaded_by))];
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("user_id, full_name")
+        .in("user_id", uploaderIds);
 
-  if (role === "learner") {
-    const { data: assignments } = await supabase
-      .from("mentor_assignments")
-      .select("mentor_id")
-      .eq("learner_id", user.id)
-      .eq("status", "active");
+      const nameMap: Record<string, string> = {};
+      profiles?.forEach((p) => (nameMap[p.user_id] = p.full_name));
 
-    mentorIds = assignments?.map((a) => a.mentor_id) || [];
-  }
+      setResources(
+        data.map((r) => ({ ...r, uploader_name: nameMap[r.uploaded_by] || "Unknown" }))
+      );
+    }
+    setLoading(false);
+  };
 
-  let query = supabase
-    .from("resources")
-    .select("*")
-    .order("created_at", { ascending: false });
-
-  if (role === "learner" && mentorIds.length > 0) {
-    query = query.in("uploaded_by", mentorIds);
-  }
+  useEffect(() => {
+    fetchResources();
+  }, []);
 
   const { data } = await query;
 
