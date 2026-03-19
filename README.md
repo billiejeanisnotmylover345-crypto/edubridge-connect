@@ -1,6 +1,6 @@
 <div align="center">
 
-# edubridge-connect
+# Edubridge-connect
 
 **Seamlessly connect students, educators, and resources to foster a collaborative learning ecosystem.**
 
@@ -10,18 +10,18 @@
 
 ## The Strategic "Why"
 
-> The modern educational landscape often suffers from fragmentation, making it challenging for students to find relevant resources, educators to manage diverse learning groups, and for both to engage in meaningful, real-time collaboration. This disconnect inhibits effective learning, resource utilization, and community building, leading to isolated experiences and missed opportunities for collective growth.
+ The modern educational landscape often suffers from fragmentation, making it challenging for students to find relevant resources, educators to manage diverse learning groups, and for both to engage in meaningful, real-time collaboration. This disconnect inhibits effective learning, resource utilization, and community building, leading to isolated experiences and missed opportunities for collective growth.
 
 `edubridge-connect` addresses this critical fragmentation by providing a unified, intuitive platform designed to bridge the gaps in educational interaction. By centralizing communication, resource sharing, and community features, it empowers users to seamlessly connect, collaborate, and thrive within a dynamic learning environment, ultimately enhancing educational outcomes and fostering a vibrant academic community.
 
 ## Key Features
 
-✨ **Unified Communication Hub**: Facilitate real-time discussions, announcements, and direct messaging to keep everyone connected and informed.
-📚 **Curated Resource Sharing**: Easily upload, organize, and discover educational materials, ensuring valuable content is accessible to those who need it.
-🤝 **Collaborative Learning Spaces**: Create dedicated groups and project areas where users can co-create, share ideas, and work together on assignments.
-👤 **Personalized User Profiles**: Manage individual profiles, track progress, and showcase achievements within the academic community.
-🔍 **Intelligent Search & Discovery**: Quickly find relevant courses, resources, and peers through advanced search and recommendation algorithms.
-🚀 **Robust Authentication & Authorization**: Securely manage user access and permissions with enterprise-grade authentication powered by Supabase.
+**Unified Communication Hub**: Facilitate real-time discussions, announcements, and direct messaging to keep everyone connected and informed.
+**Curated Resource Sharing**: Easily upload, organize, and discover educational materials, ensuring valuable content is accessible to those who need it.
+**Collaborative Learning Spaces**: Create dedicated groups and project areas where users can co-create, share ideas, and work together on assignments.
+**Personalized User Profiles**: Manage individual profiles, track progress, and showcase achievements within the academic community.
+**Intelligent Search & Discovery**: Quickly find relevant courses, resources, and peers through advanced search and recommendation algorithms.
+**Robust Authentication & Authorization**: Securely manage user access and permissions with enterprise-grade authentication powered by Supabase.
 
 ## Technical Architecture
 
@@ -48,32 +48,32 @@ edubridge-connect/
 ├── .gitignore            Specifies intentionally untracked files to ignore
 ├── bun.lockb             Bun lockfile for deterministic dependencies
 ├── components.json       Configuration for UI component libraries (e.g., Shadcn/ui)
-├── eslint.config.js      📄 ESLint configuration for code quality
-├── index.html            📄 Main HTML entry point for the application
-├── package.json          📄 Project metadata and npm script definitions
-├── package-lock.json     📄 npm lockfile for deterministic dependencies
-├── plan.md               📄 Project planning and roadmap documentation
-├── postcss.config.js     📄 PostCSS configuration for CSS processing
-├── public/               📁 Static assets (images, fonts, etc.)
+├── eslint.config.js      ESLint configuration for code quality
+├── index.html            Main HTML entry point for the application
+├── package.json          Project metadata and npm script definitions
+├── package-lock.json     npm lockfile for deterministic dependencies
+├── plan.md               Project planning and roadmap documentation
+├── postcss.config.js     PostCSS configuration for CSS processing
+├── public/               Static assets (images, fonts, etc.)
 │   └── ...
-├── src/                  📁 Application source code
-│   ├── assets/           📁 Static assets used by components
-│   ├── components/       📁 Reusable UI components
-│   ├── hooks/            📁 Custom React hooks
-│   ├── lib/              📁 Utility functions and configurations
-│   ├── pages/            📁 Top-level application pages/views
-│   ├── styles/           📁 Global stylesheets
-│   ├── App.tsx           📄 Main application component
-│   └── main.tsx          📄 Application entry point (React root)
-├── supabase/             📁 Supabase project configuration and migrations
-│   ├── migrations/       📁 Database migration scripts
-│   └── config.toml       📄 Supabase project configuration
-├── tailwind.config.ts    📄 Tailwind CSS configuration
-├── tsconfig.app.json     📄 TypeScript configuration for the application
-├── tsconfig.json         📄 Base TypeScript configuration
-├── tsconfig.node.json    📄 TypeScript configuration for Node.js environment
-├── vite.config.ts        📄 Vite build configuration
-└── vitest.config.ts      📄 Vitest testing framework configuration
+├── src/                  Application source code
+│   ├── assets/           Static assets used by components
+│   ├── components/       Reusable UI components
+│   ├── hooks/            Custom React hooks
+│   ├── lib/              Utility functions and configurations
+│   ├── pages/            Top-level application pages/views
+│   ├── styles/           Global stylesheets
+│   ├── App.tsx           Main application component
+│   └── main.tsx          Application entry point (React root)
+├── supabase/             Supabase project configuration and migrations
+│   ├── migrations/       Database migration scripts
+│   └── config.toml       Supabase project configuration
+├── tailwind.config.ts    Tailwind CSS configuration
+├── tsconfig.app.json     TypeScript configuration for the application
+├── tsconfig.json         Base TypeScript configuration
+├── tsconfig.node.json    TypeScript configuration for Node.js environment
+├── vite.config.ts        Vite build configuration
+└── vitest.config.ts      Vitest testing framework configuration
 ```
 
 ## Operational Setup
